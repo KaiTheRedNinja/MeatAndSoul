@@ -27,10 +27,6 @@ struct ContentView: View {
     ContentView()
 }
 
-#Playground {
-    _ = 1 + 2
-}
-
 protocol Sprite {
     var frame: CGRect { get }
 }
