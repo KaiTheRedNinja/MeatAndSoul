@@ -12,7 +12,7 @@ struct Player: Sprite {
     var variant: PlayerVariant
 }
 
-enum PlayerVariant {
+enum PlayerVariant: CaseIterable {
     case zombie
     case ghost
     case human

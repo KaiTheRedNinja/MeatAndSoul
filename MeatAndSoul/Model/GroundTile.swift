@@ -20,18 +20,34 @@ enum GroundTileVariant {
     case lava
 }
 
-struct TileMap {
+struct TileMap: Sprite {
     /// The number of rows in the map, i.e. vertical height
     var rows: Int
     /// The number of columns in the map, i.e. horizontal width
     var cols: Int
     /// The tiles. Key is row/col, value is tile
     var tiles: [TileAddress: GroundTile]
+    /// All the tile addresses
+    var addresses: [TileAddress]
+    /// The size of a single tile
+    var tileSize: CGSize
+    /// The frame of the whole map, positioned at the origin
+    var frame: CGRect {
+        .init(
+            origin: .zero,
+            size: .init(
+                width: tileSize.width * CGFloat(cols),
+                height: tileSize.height * CGFloat(rows)
+            )
+        )
+    }
 
     init(tileMap: [[GroundTile]], tileSize: CGSize?) {
         rows = 0
         cols = 0
         tiles = [:]
+        addresses = []
+        self.tileSize = tileSize ?? .zero
 
         guard let firstRow = tileMap.first, let firstTile = firstRow.first else {
             return
@@ -50,6 +66,7 @@ struct TileMap {
 
             for colNo in 0..<cols {
                 let cell = row[colNo]
+                addresses.append(.init(row: rowNo, col: colNo))
                 tiles[.init(row: rowNo, col: colNo)] = .init(
                     frame: .init(
                         x: size.width * CGFloat(colNo),
@@ -65,9 +82,12 @@ struct TileMap {
         self.rows = rows
         self.cols = cols
         self.tiles = tiles
+        self.tileSize = size
     }
 
-    struct TileAddress: Hashable {
+    struct TileAddress: Hashable, Identifiable {
+        var id: String { "\(row)_\(col)" }
+
         var row: Int
         var col: Int
     }

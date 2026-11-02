@@ -17,6 +17,22 @@ class LevelManager {
         self.level = level
         self.levelBackup = level
     }
+
+    static let test: LevelManager = .init(
+        level: .init(
+            name: "Testing",
+            map: """
+            +++++++++
+            +~~~~~  +
+            +~G  #  +
+            +~~~~~   
+            +#####  +
+            +#Z  ~  +
+            +#####  +
+            +++++++++
+            """
+        )
+    )
 }
 
 struct Level {
@@ -32,7 +48,7 @@ struct Level {
 
         self.players = [:]
 
-        let lines = map.split(separator: "\n")
+        let lines = map.trimmingCharacters(in: .whitespacesAndNewlines).split(separator: "\n")
         var tileMap: [[GroundTile]] = []
         for (rowNo, row) in lines.enumerated() {
             var rowTiles: [GroundTile] = []

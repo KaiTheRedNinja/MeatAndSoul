@@ -8,22 +8,21 @@
 import SwiftUI
 
 struct GameView: View {
+    @State var manager: LevelManager = .test
+
     var body: some View {
-        SpriteRender(sprite: TestSprite(
-            frame: .init(x: 0, y: 0, width: 400, height: 300),
-            text: "Hello!"
-        )) { _, sprite1 in
-            Color.red
+        SpriteRender(sprite: manager.level.tiles) { _, tiles in
+            Color.brown.brightness(0.2)
 
-            Text(sprite1.text)
+            ForEach(tiles.addresses) { address in
+                let tile = tiles.tiles[address]!
+                GroundTileView(tile: tile)
+            }
 
-            SpriteRender(sprite: TestSprite(
-                frame: .init(x: 10, y: 10, width: 200, height: 150),
-                text: "Bye!"
-            )) { _, sprite2 in
-                Color.blue
-
-                Text(sprite1.text)
+            ForEach(PlayerVariant.allCases.enumerated(), id: \.offset) { (_, variant) in
+                if let player = manager.level.players[variant] {
+                    PlayerView(player: player)
+                }
             }
         }
     }
