@@ -72,18 +72,63 @@ class LevelManager {
         if var ghost = level.players[.ghost] {
             ghost.frame.origin.x += soulChange.width
             ghost.frame.origin.y += soulChange.height
-            level.players[.ghost] = ghost
+            if validPosition(candidate: ghost) {
+                level.players[.ghost] = ghost
+            }
         }
         if var zombie = level.players[.zombie] {
             zombie.frame.origin.x += meatChange.width
             zombie.frame.origin.y += meatChange.height
-            level.players[.zombie] = zombie
+            if validPosition(candidate: zombie) {
+                level.players[.zombie] = zombie
+            }
         }
         if var human = level.players[.human] {
             human.frame.origin.x += humanChange.width
             human.frame.origin.y += humanChange.height
-            level.players[.human] = human
+            if validPosition(candidate: human) {
+                level.players[.human] = human
+            }
         }
+    }
+
+    func willCollide(playerVariant: PlayerVariant, tileVariant: GroundTileVariant) -> Bool {
+        switch playerVariant {
+        case .zombie:
+            switch tileVariant {
+            case .dirt: false
+            case .wall: true
+            case .ichor: false
+            case .salt: true
+            case .lava: true
+            }
+        case .ghost:
+            switch tileVariant {
+            case .dirt: false
+            case .wall: false
+            case .ichor: true
+            case .salt: true
+            case .lava: true
+            }
+        case .human:
+            switch tileVariant {
+            case .dirt: false
+            case .wall: true
+            case .ichor: true
+            case .salt: false
+            case .lava: true
+            }
+        }
+    }
+
+    func validPosition(candidate: Player) -> Bool {
+        for tile in level.tiles.tiles.values {
+            if willCollide(playerVariant: candidate.variant, tileVariant: tile.variant),
+               candidate.intersects(other: tile) {
+                return false
+            }
+        }
+        return true
     }
 }
 
