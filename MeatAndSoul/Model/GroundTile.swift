@@ -20,6 +20,59 @@ enum GroundTileVariant {
     case lava
 }
 
+struct TileMap {
+    /// The number of rows in the map, i.e. vertical height
+    var rows: Int
+    /// The number of columns in the map, i.e. horizontal width
+    var cols: Int
+    /// The tiles. Key is row/col, value is tile
+    var tiles: [TileAddress: GroundTile]
+
+    init(tileMap: [[GroundTile]], tileSize: CGSize?) {
+        rows = 0
+        cols = 0
+        tiles = [:]
+
+        guard let firstRow = tileMap.first, let firstTile = firstRow.first else {
+            return
+        }
+        let rows = tileMap.count
+        let cols = firstRow.count
+
+        let size = tileSize ?? firstTile.frame.size
+        var tiles: [TileAddress: GroundTile] = [:]
+        for rowNo in 0..<rows {
+            let row = tileMap[rowNo]
+            guard row.count == cols else {
+                print("ERROR: Tile map not rectangular!")
+                return
+            }
+
+            for colNo in 0..<cols {
+                let cell = row[colNo]
+                tiles[.init(row: rowNo, col: colNo)] = .init(
+                    frame: .init(
+                        x: size.width * CGFloat(colNo),
+                        y: size.height * CGFloat(rowNo),
+                        width: size.width,
+                        height: size.height
+                    ),
+                    variant: cell.variant
+                )
+            }
+        }
+
+        self.rows = rows
+        self.cols = cols
+        self.tiles = tiles
+    }
+
+    struct TileAddress: Hashable {
+        var row: Int
+        var col: Int
+    }
+}
+
 struct GroundTileView: View {
     var tile: GroundTile
 
