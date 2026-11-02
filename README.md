@@ -2,7 +2,7 @@
 A zombie and a ghost yearn to be one again.
 
 ## Gameplay Plan
-Roughly inspired by fireboy and watergirl. You play as person who has been struck by lightning, split into a zombie (Meat, WASD) and a ghost (Soul, arrow keys). They must find their way back together and exit the graveyard.
+Roughly inspired by fireboy and watergirl. You play as person who has been struck by lightning, split into a zombie (Meat, arrow keys) and a ghost (Soul, WASD). They must find their way back together and exit the graveyard.
 There are five different types of ground tiles:
 
 | Obstacle | Ghost | Zombie | Person |

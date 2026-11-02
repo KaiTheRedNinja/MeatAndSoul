@@ -13,9 +13,18 @@ class LevelManager {
     /// Copied back to `level` upon reset
     var levelBackup: Level
 
+    var currentlyPressedKeys: Set<String> = []
+
     init(level: Level) {
         self.level = level
         self.levelBackup = level
+    }
+
+    func update(forKeyEvent event: KeyEventInfo) {
+        switch event.phase {
+        case .up: currentlyPressedKeys.remove(event.physicalKeyName)
+        case .down: currentlyPressedKeys.insert(event.physicalKeyName)
+        }
     }
 
     static let test: LevelManager = .init(
@@ -33,6 +42,49 @@ class LevelManager {
             """
         )
     )
+
+    func tick(dt: TimeInterval) {
+        // update the positions
+        let soulUp = currentlyPressedKeys.contains("W")
+        let soulLeft = currentlyPressedKeys.contains("A")
+        let soulDown = currentlyPressedKeys.contains("S")
+        let soulRight = currentlyPressedKeys.contains("D")
+
+        let meatUp = currentlyPressedKeys.contains("Up")
+        let meatLeft = currentlyPressedKeys.contains("Left")
+        let meatDown = currentlyPressedKeys.contains("Down")
+        let meatRight = currentlyPressedKeys.contains("Right")
+
+        let distance = 500 * dt // 500pts/s
+
+        let soulChange = CGSize(
+            width: (soulLeft ? -distance : 0) + (soulRight ? distance : 0),
+            height: (soulUp ? -distance : 0) + (soulDown ? distance : 0)
+        )
+        let meatChange = CGSize(
+            width: (meatLeft ? -distance : 0) + (meatRight ? distance : 0),
+            height: (meatUp ? -distance : 0) + (meatDown ? distance : 0)
+        )
+        let humanChange = CGSize(
+            width: ((meatLeft || soulLeft) ? -distance : 0) + ((meatRight || soulRight) ? distance : 0),
+            height: ((meatUp || soulUp) ? -distance : 0) + ((meatDown || soulDown) ? distance : 0)
+        )
+        if var ghost = level.players[.ghost] {
+            ghost.frame.origin.x += soulChange.width
+            ghost.frame.origin.y += soulChange.height
+            level.players[.ghost] = ghost
+        }
+        if var zombie = level.players[.zombie] {
+            zombie.frame.origin.x += meatChange.width
+            zombie.frame.origin.y += meatChange.height
+            level.players[.zombie] = zombie
+        }
+        if var human = level.players[.human] {
+            human.frame.origin.x += humanChange.width
+            human.frame.origin.y += humanChange.height
+            level.players[.human] = human
+        }
+    }
 }
 
 struct Level {
