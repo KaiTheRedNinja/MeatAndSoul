@@ -69,7 +69,7 @@ struct Interactable: Sprite, Identifiable {
     var orientation: SpriteOrientation
 }
 
-enum InteractableVariant {
+enum InteractableVariant: Equatable {
     case button
     case lever
 }
@@ -114,8 +114,8 @@ struct MoveableObstacle: Sprite, Identifiable {
 
     /// Whether this obstacle defaults to closed.
     ///
-    /// - If set to `true`, the obstacle will be closed when its input is `false` (not pressed), and open when its input is `true` (pressed)
-    /// - If set to `false`, the obstacle will be open when its input is `false` (not pressed), and closed when its input is `true` (pressed)
+    /// - If set to `true`, `isOpen` will follow the `active` property of its linked Interactable
+    /// - If set to `false`, `isOpen` will be the inverse of the `active` property of its linked Interactable (i.e. `!active`)
     var defaultClosed: Bool
 
     /// If this obstacle is currently open

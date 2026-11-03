@@ -62,6 +62,23 @@ extension LevelManager {
             level.players.removeValue(forKey: .zombie)
         }
 
+        // check for button collisions
+        for (index, interactable) in level.interactables.enumerated() where interactable.variant == .button {
+            let isPressed = level.players.values.contains(where: { $0.intersects(other: interactable) })
+            var interactableCopy = interactable
+            interactableCopy.active = isPressed
+            // update the button
+            level.interactables[index] = interactableCopy
+            // update anything its linked to
+            for (index, movable) in level.moveables.enumerated() where movable.linked == interactable.linked {
+                var movableCopy = movable
+                movableCopy.isOpen = movable.defaultClosed ? isPressed : !isPressed
+                level.moveables[index] = movableCopy
+            }
+        }
+
+        // TODO: check for lever collisions
+
         // win condition checking
         if let human = level.players[.human], !level.tiles.contains(other: human) {
             print("You win!")
