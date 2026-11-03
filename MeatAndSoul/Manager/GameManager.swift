@@ -57,39 +57,60 @@ class LevelManager {
 
         let distance = 500 * dt // 500pts/s
 
-        let soulChange = CGSize(
-            width: (soulLeft ? -distance : 0) + (soulRight ? distance : 0),
-            height: (soulUp ? -distance : 0) + (soulDown ? distance : 0)
+        if let ghost = level.players[.ghost] {
+            level.players[.ghost] = move(
+                player: ghost,
+                distance: distance,
+                up: soulUp, down: soulDown, left: soulLeft, right: soulRight
+            )
+        }
+        if let zombie = level.players[.zombie] {
+            level.players[.zombie] = move(
+                player: zombie,
+                distance: distance,
+                up: meatUp, down: meatDown, left: meatLeft, right: meatRight
+            )
+        }
+        if let human = level.players[.human] {
+            level.players[.human] = move(
+                player: human,
+                distance: distance,
+                up: meatUp || soulUp,
+                down: meatDown || soulDown,
+                left: meatLeft || soulLeft,
+                right: meatRight || soulRight
+            )
+        }
+    }
+
+    func move(player: Player, distance: CGFloat, up: Bool, down: Bool, left: Bool, right: Bool) -> Player {
+        let change = CGSize(
+            width: (left ? -distance : 0) + (right ? distance : 0),
+            height: (up ? -distance : 0) + (down ? distance : 0)
         )
-        let meatChange = CGSize(
-            width: (meatLeft ? -distance : 0) + (meatRight ? distance : 0),
-            height: (meatUp ? -distance : 0) + (meatDown ? distance : 0)
-        )
-        let humanChange = CGSize(
-            width: ((meatLeft || soulLeft) ? -distance : 0) + ((meatRight || soulRight) ? distance : 0),
-            height: ((meatUp || soulUp) ? -distance : 0) + ((meatDown || soulDown) ? distance : 0)
-        )
-        if var ghost = level.players[.ghost] {
-            ghost.frame.origin.x += soulChange.width
-            ghost.frame.origin.y += soulChange.height
-            if validPosition(candidate: ghost) {
-                level.players[.ghost] = ghost
+        // ensure that horizontal movement works
+        var candidate = player
+        candidate.frame.origin.x += change.width
+        if !validPosition(candidate: candidate) {
+            // undo if not valid position
+            candidate.frame.origin.x -= change.width
+        }
+        candidate.frame.origin.y += change.height
+        if !validPosition(candidate: candidate) {
+            // undo if not valid position
+            candidate.frame.origin.y -= change.height
+        }
+        return candidate
+    }
+
+    func validPosition(candidate: Player) -> Bool {
+        for tile in level.tiles.tiles.values {
+            if willCollide(playerVariant: candidate.variant, tileVariant: tile.variant),
+               candidate.intersects(other: tile) {
+                return false
             }
         }
-        if var zombie = level.players[.zombie] {
-            zombie.frame.origin.x += meatChange.width
-            zombie.frame.origin.y += meatChange.height
-            if validPosition(candidate: zombie) {
-                level.players[.zombie] = zombie
-            }
-        }
-        if var human = level.players[.human] {
-            human.frame.origin.x += humanChange.width
-            human.frame.origin.y += humanChange.height
-            if validPosition(candidate: human) {
-                level.players[.human] = human
-            }
-        }
+        return true
     }
 
     func willCollide(playerVariant: PlayerVariant, tileVariant: GroundTileVariant) -> Bool {
@@ -119,16 +140,6 @@ class LevelManager {
             case .lava: true
             }
         }
-    }
-
-    func validPosition(candidate: Player) -> Bool {
-        for tile in level.tiles.tiles.values {
-            if willCollide(playerVariant: candidate.variant, tileVariant: tile.variant),
-               candidate.intersects(other: tile) {
-                return false
-            }
-        }
-        return true
     }
 }
 
