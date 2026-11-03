@@ -22,6 +22,7 @@ extension LevelManager {
 
         let distance = 500 * dt // 500pts/s
 
+        // move players
         if let ghost = level.players[.ghost] {
             level.players[.ghost] = move(
                 player: ghost,
@@ -45,6 +46,24 @@ extension LevelManager {
                 left: meatLeft || soulLeft,
                 right: meatRight || soulRight
             )
+        }
+
+        // check for joining
+        if let ghost = level.players[.ghost],
+           let zombie = level.players[.zombie],
+           ghost.intersects(other: zombie) {
+            // when ghost and zombie touch => human!
+            level.players[.human] = .init(
+                frame: zombie.frame, // use zombie frame to avoid clipping into walls if they merge on a diagonal
+                variant: .human
+            )
+            level.players.removeValue(forKey: .ghost)
+            level.players.removeValue(forKey: .zombie)
+        }
+
+        // win condition checking
+        if let human = level.players[.human], !level.tiles.contains(other: human) {
+            print("You win!")
         }
     }
 
