@@ -7,7 +7,8 @@
 
 import SwiftUI
 
-struct Player: Sprite {
+struct Player: Sprite, Identifiable {
+    var id: UUID = .init()
     var frame: CGRect
     var variant: PlayerVariant
 }

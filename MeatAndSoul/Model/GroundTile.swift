@@ -14,10 +14,6 @@ struct GroundTile: Sprite {
 
 enum GroundTileVariant {
     case dirt
-    case wall
-    case ichor
-    case salt
-    case lava
 }
 
 struct TileMap: Sprite {
@@ -101,14 +97,6 @@ struct GroundTileView: View {
             switch tile.variant {
             case .dirt:
                 Color.brown
-            case .wall:
-                Color(white: 0.2)
-            case .ichor:
-                Color.blue
-            case .salt:
-                Color(white: 0.8)
-            case .lava:
-                Color.red
             }
         }
     }

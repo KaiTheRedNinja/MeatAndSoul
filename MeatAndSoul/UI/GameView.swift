@@ -28,6 +28,10 @@ struct GameView: View {
                     PlayerView(player: player)
                 }
             }
+
+            ForEach(manager.level.obstacles) { obstacle in
+                ObstacleView(obstacle: obstacle)
+            }
         }
         .background {
             KeyCaptureView { event in

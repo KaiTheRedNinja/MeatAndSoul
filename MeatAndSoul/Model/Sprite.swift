@@ -15,6 +15,9 @@ extension Sprite {
     func intersects(other: any Sprite) -> Bool {
         self.frame.intersects(other.frame)
     }
+    func contains(other: any Sprite) -> Bool {
+        self.frame.contains(other.frame)
+    }
 }
 
 // render the sprite into the frame
