@@ -23,7 +23,7 @@ struct Level {
         self.players = [:]
         self.obstacles = []
 
-        let lines = map.trimmingCharacters(in: .whitespacesAndNewlines).split(separator: "\n")
+        let lines = map.trimmingCharacters(in: .whitespacesAndNewlines).split(separator: "\n").map { $0.characters }
         var tileMap: [[GroundTile]] = []
         for (rowNo, row) in lines.enumerated() {
             var rowTiles: [GroundTile] = []
@@ -43,14 +43,47 @@ struct Level {
                     players[.ghost] = .init(frame: .init(center: cellFrame.center, size: playerSize), variant: .ghost)
                 case "Z":
                     players[.zombie] = .init(frame: .init(center: cellFrame.center, size: playerSize), variant: .zombie)
-                case "#":
-                    obstacles.append(.init(frame: .init(center: cellFrame.center, size: obstacleSize), variant: .wall))
-                case "~":
-                    obstacles.append(.init(frame: .init(center: cellFrame.center, size: obstacleSize), variant: .ichor))
-                case "*":
-                    obstacles.append(.init(frame: .init(center: cellFrame.center, size: obstacleSize), variant: .salt))
-                case "+":
-                    obstacles.append(.init(frame: .init(center: cellFrame.center, size: obstacleSize), variant: .lava))
+                case "#", "~", "*", "+":
+                    let variant: ObstacleVariant = switch cell {
+                    case "#": .wall
+                    case "~": .ichor
+                    case "*": .salt
+                    case "+": .lava
+                    default: fatalError("Internal inconsistency")
+                    }
+
+                    // determine if the obstacles to the top, bottom, left, and right are the same type.
+                    let upSame = if rowNo > 0 { lines[rowNo-1][colNo] == cell } else { false }
+                    let downSame = if rowNo < lines.count - 1 { lines[rowNo+1][colNo] == cell } else { false }
+                    let leftSame = if colNo > 0 { row[colNo-1] == cell } else { false }
+                    let rightSame = if colNo < row.count - 1 { row[colNo+1] == cell } else { false }
+
+                    let dot = CGRect(center: cellFrame.center, size: obstacleSize)
+                    // calculate the horizontal
+                    if leftSame || rightSame {
+                        let horizontalRect = CGRect(
+                            minX: leftSame ? cellFrame.minX : dot.minX,
+                            minY: dot.minY,
+                            maxX: rightSame ? cellFrame.maxX : dot.maxX,
+                            maxY: dot.maxY
+                        )
+                        obstacles.append(.init(frame: horizontalRect, variant: variant, orientation: .up))
+                    }
+                    // calculate the vertical
+                    if upSame || downSame {
+                        let verticalRect = CGRect(
+                            minX: dot.minX,
+                            minY: upSame ? cellFrame.minY : dot.minY,
+                            maxX: dot.maxX,
+                            maxY: downSame ? cellFrame.maxY : dot.maxY
+                        )
+                        obstacles.append(.init(frame: verticalRect, variant: variant, orientation: .left))
+                    }
+
+                    // if none, then its just a dot
+                    if !(upSame || downSame || leftSame || rightSame) {
+                        obstacles.append(.init(frame: dot, variant: variant, orientation: .up))
+                    }
                 default:
                     break // do nothing
                 }
@@ -70,7 +103,22 @@ extension CGRect {
         )
     }
 
+    init(minX: CGFloat, minY: CGFloat, maxX: CGFloat, maxY: CGFloat) {
+        self.init(
+            x: minX,
+            y: minY,
+            width: maxX - minX,
+            height: maxY - minY
+        )
+    }
+
     var center: CGPoint {
         .init(x: midX, y: midY)
+    }
+}
+
+extension StringProtocol {
+    var characters: [Character] {
+        self.map { $0 }
     }
 }

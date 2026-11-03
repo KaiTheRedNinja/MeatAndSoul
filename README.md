@@ -3,12 +3,11 @@ A zombie and a ghost yearn to be one again.
 
 ## Gameplay Plan
 Roughly inspired by fireboy and watergirl. You play as person who has been struck by lightning, split into a zombie (Meat, arrow keys) and a ghost (Soul, WASD). They must find their way back together and exit the graveyard.
-There are five different types of ground tiles:
+There are four different types of obstacles:
 
 | Obstacle | Ghost | Zombie | Person |
 | --- | --- | --- | --- |
-| Dirt | Walks on | Walks on | Walks on |
-|  Wall| Fazes through | Stopped | Stopped |
+| Wall | Fazes through | Stopped | Stopped |
 | Ichor | Stopped | Swims through |  Stopped|
 | Salt | Stopped | Stopped | Walks over |
 |  Lava| Stopped | Stopped | Stopped |
@@ -22,16 +21,16 @@ Basic functionality:
   - [x] Ghost
   - [x] Zombie
   - [x] Human
-  - [ ] Collisions
-- [ ] Tiles
-  - [ ] Dirt
+  - [x] Collisions
+- [x] Tiles
+  - [x] Dirt
+- [ ] Obstacles
+  - [x] Decide whether we want the walls/ichor/salt/lava to be considered tiles or obstacles
   - [ ] Wall
   - [ ] Ichor
   - [ ] Salt
   - [ ] Lava
-- [ ] Obstacles
-  - [ ] Decide whether we want the walls/ichor/salt/lava to be considered tiles or obstacles
-    - [ ] Multiple orientations
+  - [ ] Multiple orientations for all of the walls (2^4 = 16 possible states)
   - [ ] Movable obstacles, e.g. doors (opens walls), bridges (over ichor, lava), fans (breaks salt)
   - [ ] Trigger items, e.g. levers and buttons
 - [ ] Game loop

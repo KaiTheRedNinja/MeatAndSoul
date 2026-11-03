@@ -11,6 +11,7 @@ struct Obstacle: Sprite, Identifiable {
     var id: UUID = .init()
     var frame: CGRect
     var variant: ObstacleVariant
+    var orientation: Orientation
 }
 
 enum ObstacleVariant {
@@ -18,6 +19,13 @@ enum ObstacleVariant {
     case ichor
     case salt
     case lava
+}
+
+enum Orientation {
+    // obstacle faces up
+    case up
+    // obstacle faces left
+    case left
 }
 
 struct ObstacleView: View {

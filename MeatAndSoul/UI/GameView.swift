@@ -23,14 +23,14 @@ struct GameView: View {
                 GroundTileView(tile: tile)
             }
 
+            ForEach(manager.level.obstacles) { obstacle in
+                ObstacleView(obstacle: obstacle)
+            }
+
             ForEach(PlayerVariant.allCases.enumerated(), id: \.offset) { (_, variant) in
                 if let player = manager.level.players[variant] {
                     PlayerView(player: player)
                 }
-            }
-
-            ForEach(manager.level.obstacles) { obstacle in
-                ObstacleView(obstacle: obstacle)
             }
         }
         .background {
