@@ -24,10 +24,11 @@ class LevelManager {
         level: .init(
             name: "Testing",
             replacements: [
-                "A": .init(linked: "A", frame: .zero, variant: .bridge, defaultClosed: true, isOpen: true),
-                "B": .init(linked: "B", frame: .zero, variant: .bridge, defaultClosed: true, isOpen: false),
-                "C": .init(linked: "C", frame: .zero, variant: .door, defaultClosed: true, isOpen: true),
-                "D": .init(linked: "D", frame: .zero, variant: .door, defaultClosed: true, isOpen: false)
+                "A": .init(movable: .init(linked: "A", frame: .zero, variant: .bridge, defaultClosed: true, isOpen: true)),
+                "B": .init(movable: .init(linked: "B", frame: .zero, variant: .bridge, defaultClosed: true, isOpen: false)),
+                "C": .init(movable: .init(linked: "C", frame: .zero, variant: .door, defaultClosed: true, isOpen: true)),
+                "D": .init(movable: .init(linked: "D", frame: .zero, variant: .door, defaultClosed: true, isOpen: false)),
+                "E": .init(interactable: .init(linked: "A", frame: .zero, variant: .button, active: false, orientation: .up))
             ],
             map: """
             ++++++++++
@@ -35,7 +36,7 @@ class LevelManager {
             +~G# AB  +
             +~~~~~~   
             +######  +
-            +#Z~ CD  +
+            +#Z~ECD  +
             +######  +
             ++++++++++
             """

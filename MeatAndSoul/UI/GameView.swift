@@ -32,11 +32,11 @@ struct GameView: View {
                     ObstacleView(obstacle: obstacle)
                 }
 
-                ForEach(manager.level.moveable) { moveable in
+                ForEach(manager.level.moveables) { moveable in
                     MoveableView(moveable: moveable)
                 }
 
-                ForEach(manager.level.interactable) { interactable in
+                ForEach(manager.level.interactables) { interactable in
                     InteractableView(interactable: interactable)
                 }
 

@@ -116,7 +116,7 @@ extension LevelManager {
         }
 
         // get all areas where hitboxes are invalidated due to a movable obstacle
-        let invalidatingRects: [CGRect] = level.moveable.compactMap { $0.currentBehaviour == .movementAllowed ? $0.frame : nil }
+        let invalidatingRects: [CGRect] = level.moveables.compactMap { $0.currentBehaviour == .movementAllowed ? $0.frame : nil }
 
         // check obstacle collisions
         for obstacle in level.obstacles {
@@ -128,7 +128,7 @@ extension LevelManager {
             }
         }
         // check moveable collisions
-        for moveable in level.moveable {
+        for moveable in level.moveables {
             // we don't need to check if moveables are invalidated because they shouldn't overlap
             guard case let .obstacle(variant) = moveable.currentBehaviour else { continue }
             if canCollide(playerVariant: candidate.variant, obstacleVariant: variant),
