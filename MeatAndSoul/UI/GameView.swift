@@ -15,33 +15,39 @@ struct GameView: View {
     @State var lastUpdate: Date?
 
     var body: some View {
-        SpriteRender(sprite: manager.level.tiles) { _, tiles in
-            Color.brown.brightness(0.2)
-
-            ForEach(tiles.addresses) { address in
-                let tile = tiles.tiles[address]!
-                GroundTileView(tile: tile)
+        VStack {
+            Button("Restart") {
+                manager.restart()
             }
 
-            ForEach(manager.level.obstacles) { obstacle in
-                ObstacleView(obstacle: obstacle)
-            }
+            SpriteRender(sprite: manager.level.tiles) { _, tiles in
+                Color.brown.brightness(0.2)
 
-            ForEach(PlayerVariant.allCases.enumerated(), id: \.offset) { (_, variant) in
-                if let player = manager.level.players[variant] {
-                    PlayerView(player: player)
+                ForEach(tiles.addresses) { address in
+                    let tile = tiles.tiles[address]!
+                    GroundTileView(tile: tile)
+                }
+
+                ForEach(manager.level.obstacles) { obstacle in
+                    ObstacleView(obstacle: obstacle)
+                }
+
+                ForEach(PlayerVariant.allCases.enumerated(), id: \.offset) { (_, variant) in
+                    if let player = manager.level.players[variant] {
+                        PlayerView(player: player)
+                    }
                 }
             }
-        }
-        .background {
-            KeyCaptureView { event in
-                manager.update(forKeyEvent: event)
+            .background {
+                KeyCaptureView { event in
+                    manager.update(forKeyEvent: event)
+                }
             }
-        }
-        .onReceive(gameTimer) { date in
-            defer { lastUpdate = date }
-            if let lastUpdate {
-                manager.tick(dt: date.timeIntervalSince(lastUpdate))
+            .onReceive(gameTimer) { date in
+                defer { lastUpdate = date }
+                if let lastUpdate {
+                    manager.tick(dt: date.timeIntervalSince(lastUpdate))
+                }
             }
         }
     }

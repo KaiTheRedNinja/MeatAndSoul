@@ -26,11 +26,11 @@ Basic functionality:
   - [x] Dirt
 - [ ] Obstacles
   - [x] Decide whether we want the walls/ichor/salt/lava to be considered tiles or obstacles
-  - [ ] Wall
-  - [ ] Ichor
-  - [ ] Salt
-  - [ ] Lava
-  - [ ] Multiple orientations for all of the walls (2^4 = 16 possible states)
+  - [x] Wall
+  - [x] Ichor
+  - [x] Salt
+  - [x] Lava
+  - [x] Multiple orientations for all of the walls (2^4 = 16 possible states)
   - [ ] Movable obstacles, e.g. doors (opens walls), bridges (over ichor, lava), fans (breaks salt)
   - [ ] Trigger items, e.g. levers and buttons
 - [ ] Game loop

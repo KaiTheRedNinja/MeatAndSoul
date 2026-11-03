@@ -46,4 +46,8 @@ class LevelManager {
     func tick(dt: TimeInterval) {
         updatePlayer(dt: dt)
     }
+
+    func restart() {
+        level = levelBackup
+    }
 }
