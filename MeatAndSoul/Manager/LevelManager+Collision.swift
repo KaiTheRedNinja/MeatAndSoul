@@ -6,19 +6,20 @@
 //
 
 import Foundation
+import CoreGraphics
 
 extension LevelManager {
     func updatePlayer(dt: TimeInterval) {
         // update the positions
-        let soulUp = currentlyPressedKeys.contains("W")
-        let soulLeft = currentlyPressedKeys.contains("A")
-        let soulDown = currentlyPressedKeys.contains("S")
-        let soulRight = currentlyPressedKeys.contains("D")
+        let soulUp = keys.keyState("W").isDown
+        let soulLeft = keys.keyState("A").isDown
+        let soulDown = keys.keyState("S").isDown
+        let soulRight = keys.keyState("D").isDown
 
-        let meatUp = currentlyPressedKeys.contains("Up")
-        let meatLeft = currentlyPressedKeys.contains("Left")
-        let meatDown = currentlyPressedKeys.contains("Down")
-        let meatRight = currentlyPressedKeys.contains("Right")
+        let meatUp = keys.keyState("Up").isDown
+        let meatLeft = keys.keyState("Left").isDown
+        let meatDown = keys.keyState("Down").isDown
+        let meatRight = keys.keyState("Right").isDown
 
         let distance = 500 * dt // 500pts/s
 
@@ -114,15 +115,21 @@ extension LevelManager {
             }
         }
 
+        // get all areas where hitboxes are invalidated due to a movable obstacle
+        let invalidatingRects: [CGRect] = level.moveable.compactMap { $0.currentBehaviour == .movementAllowed ? $0.frame : nil }
+
         // check obstacle collisions
         for obstacle in level.obstacles {
-            if canCollide(playerVariant: candidate.variant, obstacleVariant: obstacle.variant),
-               candidate.intersects(other: obstacle) {
+            let collisionRect = candidate.frame.intersection(obstacle.frame)
+            if canCollide(playerVariant: candidate.variant, obstacleVariant: obstacle.variant), // can collide
+               collisionRect != .null,                                                          // does collide
+               !invalidatingRects.contains(where: { $0.contains(collisionRect) }) {             // collision is not invalidated
                 return false
             }
         }
         // check moveable collisions
         for moveable in level.moveable {
+            // we don't need to check if moveables are invalidated because they shouldn't overlap
             guard case let .obstacle(variant) = moveable.currentBehaviour else { continue }
             if canCollide(playerVariant: candidate.variant, obstacleVariant: variant),
                candidate.intersects(other: moveable) {

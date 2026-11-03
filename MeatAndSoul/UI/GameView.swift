@@ -36,6 +36,10 @@ struct GameView: View {
                     MoveableView(moveable: moveable)
                 }
 
+                ForEach(manager.level.interactable) { interactable in
+                    InteractableView(interactable: interactable)
+                }
+
                 ForEach(PlayerVariant.allCases.enumerated(), id: \.offset) { (_, variant) in
                     if let player = manager.level.players[variant] {
                         PlayerView(player: player)
@@ -44,7 +48,7 @@ struct GameView: View {
             }
             .background {
                 KeyCaptureView { event in
-                    manager.update(forKeyEvent: event)
+                    manager.keys.update(forKeyEvent: event)
                 }
             }
             .onReceive(gameTimer) { date in

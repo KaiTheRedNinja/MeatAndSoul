@@ -12,6 +12,7 @@ struct Level {
     var players: [PlayerVariant: Player]
     var obstacles: [Obstacle]
     var moveable: [MoveableObstacle]
+    var interactable: [Interactable]
     var tiles: TileMap
 
     init(name: String, replacements: [Character: MoveableObstacle] = [:], map: String) {
@@ -24,6 +25,7 @@ struct Level {
         self.players = [:]
         self.obstacles = []
         self.moveable = []
+        self.interactable = []
 
         let lines = map.trimmingCharacters(in: .whitespacesAndNewlines).split(separator: "\n").map { $0.characters }
         var tileMap: [[GroundTile]] = []

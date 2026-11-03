@@ -74,6 +74,34 @@ enum InteractableVariant {
     case lever
 }
 
+struct InteractableView: View {
+    var interactable: Interactable
+
+    var body: some View {
+        SpriteRender(sprite: interactable) { size, _ in
+            switch interactable.variant {
+            case .button:
+                // button!
+                Circle()
+                    .fill(Color.gray)
+                Circle()
+                    .fill(Color.black)
+                    .padding(10)
+            case .lever:
+                // switch
+                HStack {
+                    Rectangle()
+                        .fill(Color.red)
+
+                    Rectangle()
+                        .fill(Color.green)
+                }
+                .clipShape(RoundedRectangle(cornerRadius: 10))
+            }
+        }
+    }
+}
+
 struct MoveableObstacle: Sprite, Identifiable {
     var id: UUID = .init()
 
@@ -118,7 +146,7 @@ enum MoveableVariant {
     }
 }
 
-enum MoveableBehaviour {
+enum MoveableBehaviour: Equatable {
     /// Any obstacle inside the bounds of this moveable are ignored
     case movementAllowed
     /// This moveable acts like an obstacle

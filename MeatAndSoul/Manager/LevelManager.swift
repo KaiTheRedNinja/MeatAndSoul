@@ -13,18 +13,11 @@ class LevelManager {
     /// Copied back to `level` upon reset
     var levelBackup: Level
 
-    var currentlyPressedKeys: Set<String> = []
+    var keys: KeysState = .init()
 
     init(level: Level) {
         self.level = level
         self.levelBackup = level
-    }
-
-    func update(forKeyEvent event: KeyEventInfo) {
-        switch event.phase {
-        case .up: currentlyPressedKeys.remove(event.physicalKeyName)
-        case .down: currentlyPressedKeys.insert(event.physicalKeyName)
-        }
     }
 
     static let test: LevelManager = .init(
@@ -55,5 +48,57 @@ class LevelManager {
 
     func restart() {
         level = levelBackup
+    }
+}
+
+struct KeysState: Equatable {
+    private var states: [String: KeyState]
+
+    init() {
+        self.states = [:]
+    }
+
+    enum KeyState {
+        /// The key was just pressed between this tick and the previous
+        case wasPressed
+        /// The key is being pressed
+        case pressed
+        /// The key was just released between this tick and the previous
+        case wasReleased
+        /// The key is released (i.e. not pressed)
+        case released
+
+        var isDown: Bool {
+            switch self {
+            case .wasPressed, .pressed: true
+            case .wasReleased, .released: false
+            }
+        }
+    }
+
+    mutating func update(forKeyEvent event: KeyEventInfo) {
+        switch event.phase {
+        case .up: states[event.physicalKeyName] = .wasReleased
+        case .down:
+            if !keyState(event.physicalKeyName).isDown {
+                states[event.physicalKeyName] = .wasPressed
+            }
+        }
+    }
+
+    /// Turns all `wasPressed` into `pressed` and all `wasReleased` into `released`
+    mutating func nextTick() {
+        for (name, state) in states {
+            switch state {
+            case .wasPressed: states[name] = .pressed
+            case .wasReleased: states[name] = .released
+            default: continue
+            }
+        }
+    }
+
+    /// Returns the current state of the key
+    func keyState(_ name: String) -> KeyState {
+        states[name, default: .released]
     }
 }
