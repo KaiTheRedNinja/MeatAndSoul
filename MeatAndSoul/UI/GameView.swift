@@ -32,6 +32,10 @@ struct GameView: View {
                     ObstacleView(obstacle: obstacle)
                 }
 
+                ForEach(manager.level.moveable) { moveable in
+                    MoveableView(moveable: moveable)
+                }
+
                 ForEach(PlayerVariant.allCases.enumerated(), id: \.offset) { (_, variant) in
                     if let player = manager.level.players[variant] {
                         PlayerView(player: player)

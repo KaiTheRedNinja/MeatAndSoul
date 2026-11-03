@@ -121,6 +121,14 @@ extension LevelManager {
                 return false
             }
         }
+        // check moveable collisions
+        for moveable in level.moveable {
+            guard case let .obstacle(variant) = moveable.currentBehaviour else { continue }
+            if canCollide(playerVariant: candidate.variant, obstacleVariant: variant),
+               candidate.intersects(other: moveable) {
+                return false
+            }
+        }
         // for ghost and zombie, ensure it stays within level bounds
         if candidate.variant != .human, !level.tiles.contains(other: candidate) {
             return false

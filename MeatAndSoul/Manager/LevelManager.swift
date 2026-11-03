@@ -30,15 +30,21 @@ class LevelManager {
     static let test: LevelManager = .init(
         level: .init(
             name: "Testing",
+            replacements: [
+                "A": .init(linked: "A", frame: .zero, variant: .bridge, defaultClosed: true, isOpen: true),
+                "B": .init(linked: "B", frame: .zero, variant: .bridge, defaultClosed: true, isOpen: false),
+                "C": .init(linked: "C", frame: .zero, variant: .door, defaultClosed: true, isOpen: true),
+                "D": .init(linked: "D", frame: .zero, variant: .door, defaultClosed: true, isOpen: false)
+            ],
             map: """
-            +++++++++
-            +~~~~~  +
-            +~G  #  +
-            +~~~~~   
-            +#####  +
-            +#Z  ~  +
-            +#####  +
-            +++++++++
+            ++++++++++
+            +~~~~~~  +
+            +~G# AB  +
+            +~~~~~~   
+            +######  +
+            +#Z~ CD  +
+            +######  +
+            ++++++++++
             """
         )
     )

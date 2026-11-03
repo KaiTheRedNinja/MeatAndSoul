@@ -11,9 +11,10 @@ struct Level {
     var name: String
     var players: [PlayerVariant: Player]
     var obstacles: [Obstacle]
+    var moveable: [MoveableObstacle]
     var tiles: TileMap
 
-    init(name: String, map: String) {
+    init(name: String, replacements: [Character: MoveableObstacle] = [:], map: String) {
         let tileSize: CGSize = .init(width: 100, height: 100)
         let playerSize: CGSize = .init(width: 60, height: 60)
         let obstacleSize: CGSize = .init(width: 80, height: 80)
@@ -22,6 +23,7 @@ struct Level {
 
         self.players = [:]
         self.obstacles = []
+        self.moveable = []
 
         let lines = map.trimmingCharacters(in: .whitespacesAndNewlines).split(separator: "\n").map { $0.characters }
         var tileMap: [[GroundTile]] = []
@@ -85,7 +87,11 @@ struct Level {
                         obstacles.append(.init(frame: dot, variant: variant, orientation: .up))
                     }
                 default:
-                    break // do nothing
+                    // check if it matches a known replacement, else continue loop
+                    guard var replacement = replacements[cell] else { continue }
+                    // add the replacement in
+                    replacement.frame = cellFrame
+                    moveable.append(replacement)
                 }
             }
 
