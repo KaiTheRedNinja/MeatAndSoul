@@ -1,5 +1,5 @@
 //
-//  GameManager+Collision.swift
+//  LevelManager+Collision.swift
 //  MeatAndSoul
 //
 //  Created by Kai Quan Tay on 3/11/26.
