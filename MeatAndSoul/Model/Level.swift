@@ -18,7 +18,7 @@ struct Level {
     init(name: String, replacements: [Character: TileReplacement] = [:], map: String) {
         let tileSize: CGSize = .init(width: 100, height: 100)
         let playerSize: CGSize = .init(width: 60, height: 60)
-        let obstacleSize: CGSize = .init(width: 80, height: 80)
+        let obstacleSize: CGSize = .init(width: 60, height: 60)
 
         self.name = name
 
@@ -75,6 +75,13 @@ struct Level {
                     let leftSame = if colNo > 0 { row[colNo-1] == cell } else { false }
                     let rightSame = if colNo < row.count - 1 { row[colNo+1] == cell } else { false }
 
+                    let joints: Set<SpriteOrientation> = .init(map: [
+                        .up: upSame,
+                        .down: downSame,
+                        .left: leftSame,
+                        .right: rightSame
+                    ])
+
                     let dot = CGRect(center: cellFrame.center, size: obstacleSize)
                     // calculate the horizontal
                     if leftSame || rightSame {
@@ -84,7 +91,7 @@ struct Level {
                             maxX: rightSame ? cellFrame.maxX : dot.maxX,
                             maxY: dot.maxY
                         )
-                        obstacles.append(.init(frame: horizontalRect, variant: obstacle, orientation: .up))
+                        obstacles.append(.init(frame: horizontalRect, variant: obstacle, orientation: .up, joints: joints))
                     }
                     // calculate the vertical
                     if upSame || downSame {
@@ -94,12 +101,12 @@ struct Level {
                             maxX: dot.maxX,
                             maxY: downSame ? cellFrame.maxY : dot.maxY
                         )
-                        obstacles.append(.init(frame: verticalRect, variant: obstacle, orientation: .left))
+                        obstacles.append(.init(frame: verticalRect, variant: obstacle, orientation: .left, joints: joints))
                     }
 
                     // if none, then its just a dot
                     if !(upSame || downSame || leftSame || rightSame) {
-                        obstacles.append(.init(frame: dot, variant: obstacle, orientation: .up))
+                        obstacles.append(.init(frame: dot, variant: obstacle, orientation: .up, joints: joints))
                     }
                 }
 
@@ -150,5 +157,11 @@ extension CGRect {
 extension StringProtocol {
     var characters: [Character] {
         self.map { $0 }
+    }
+}
+
+extension Set {
+    init(map: [Element: Bool]) {
+        self = Set(map.compactMap { $0.value ? $0.key : nil })
     }
 }

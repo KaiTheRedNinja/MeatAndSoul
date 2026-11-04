@@ -13,6 +13,7 @@ struct Obstacle: Sprite, Identifiable {
     var frame: CGRect
     var variant: ObstacleVariant
     var orientation: SpriteOrientation
+    var joints: Set<SpriteOrientation>
 }
 
 enum ObstacleVariant {
@@ -57,6 +58,16 @@ struct ObstacleView: View {
                                 )
                         }
                     }
+
+                    Color.black
+                        .reverseMask {
+                            Rectangle()
+                                .padding(.leading, obstacle.joints.contains(.left) ? -15 : 0)
+                                .padding(.trailing, obstacle.joints.contains(.right) ? -15 : 0)
+                                .padding(.top, obstacle.joints.contains(.up) ? -15 : 0)
+                                .padding(.bottom, obstacle.joints.contains(.down) ? -15 : 0)
+                                .blur(radius: 10)
+                        }
                 }
                 .compositingGroup()
                 .padding(-outerEdge)

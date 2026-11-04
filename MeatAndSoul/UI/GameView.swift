@@ -32,6 +32,14 @@ struct GameView: View {
                     ObstacleView(obstacle: obstacle)
                 }
 
+//                // DEBUG: hitboxes for obstacles
+//                ForEach(manager.level.obstacles) { obstacle in
+//                    SpriteRender(sprite: obstacle) { _, _ in
+//                        Rectangle()
+//                            .stroke(Color.cyan)
+//                    }
+//                }
+
                 ForEach(manager.level.moveables) { moveable in
                     MoveableView(moveable: moveable)
                 }
@@ -69,4 +77,20 @@ struct TestSprite: Sprite {
 
 extension EnvironmentValues {
     @Entry var currentOffset: TimeInterval = 0
+}
+
+extension View {
+    @inlinable
+    public func reverseMask<Mask: View>(
+        alignment: Alignment = .center,
+        @ViewBuilder _ mask: () -> Mask
+    ) -> some View {
+        self.mask {
+            Rectangle()
+                .overlay(alignment: alignment) {
+                    mask()
+                        .blendMode(.destinationOut)
+                }
+        }
+    }
 }
