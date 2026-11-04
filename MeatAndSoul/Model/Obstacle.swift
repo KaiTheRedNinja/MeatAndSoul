@@ -70,65 +70,117 @@ struct ObstacleView: View {
                         }
                 }
                 .compositingGroup()
-                .padding(-outerEdge)
-                .mask {
-                    Path { path in
-                        path.move(to: .init(
-                            x: amplitude * sin((rect.minY - outerEdge) * factor + timeOffset) - padding,
-                            y: -outerEdge
-                        ))
-                        // left barrier
-                        for point in Int(-outerEdge)..<Int(rect.height+outerEdge) {
-                            let absoluteYOffset = CGFloat(point) + rect.minY
-                            path.addLine(to: .init(
-                                x: amplitude * sin(absoluteYOffset * factor + timeOffset) - padding,
-                                y: CGFloat(point))
-                            )
-                        }
-                        // right barrier
-                        for point in (Int(-outerEdge)..<Int(rect.height+outerEdge)).reversed() {
-                            let absoluteYOffset = CGFloat(point) + rect.minY
-                            path.addLine(to: .init(
-                                x: rect.width + amplitude * sin(absoluteYOffset * factor + timeOffset) + padding,
-                                y: CGFloat(point))
-                            )
-                        }
-                        path.closeSubpath()
-                    }
-                    .fill(Color.black)
-                }
-                .mask {
-                    Path { path in
-                        path.move(to: .init(
-                            x: -outerEdge,
-                            y: amplitude * sin((rect.minX - outerEdge) * factor + timeOffset) - padding
-                        ))
-                        // top barrier
-                        for point in Int(-outerEdge)..<Int(rect.width+outerEdge) {
-                            let absoluteXOffset = CGFloat(point) + rect.minX
-                            path.addLine(to: .init(
-                                x: CGFloat(point),
-                                y: amplitude * sin(absoluteXOffset * factor + timeOffset) - padding
-                            ))
-                        }
-                        // bottom barrier
-                        for point in (Int(-outerEdge)..<Int(rect.width+outerEdge)).reversed() {
-                            let absoluteXOffset = CGFloat(point) + rect.minX
-                            path.addLine(to: .init(
-                                x: CGFloat(point),
-                                y: rect.height + amplitude * sin(absoluteXOffset * factor + timeOffset) + padding
-                            ))
-                        }
-                        path.closeSubpath()
-                    }
-                    .fill(Color.black)
-                }
+                .waterMask(padding: padding, amplitude: amplitude, factor: factor, phase: timeOffset, rect: rect)
             case .salt:
                 Color(white: 0.8)
             case .lava:
-                Color.red
+                let padding: CGFloat = 3 // how far outside bounds the lines go, on average
+                let amplitude: CGFloat = 3 // how large the zigzagging is
+                let factor: CGFloat = 1/3 // how rough lines are
+
+                let outerEdge = padding + amplitude
+                let bigRect = CGRect(
+                    x: rect.minX - outerEdge,
+                    y: rect.minY - outerEdge,
+                    width: rect.width + 2*outerEdge,
+                    height: rect.height + 2*outerEdge
+                )
+
+                ZStack {
+                    Color.red
+                    HStack(spacing: 0) {
+                        let startXIndex = Int(bigRect.minX / 10)
+                        let endXIndex = Int(bigRect.maxX / 10)
+                        ForEach(startXIndex..<endXIndex, id: \.self) { xIndex in
+                            Color.orange
+                                .opacity(
+                                    0.6 + 0.2*sin(CGFloat(xIndex) * 0.3 - timeOffset)
+                                )
+                        }
+                    }
+
+                    Color.black
+                        .reverseMask {
+                            Rectangle()
+                                .padding(.leading, obstacle.joints.contains(.left) ? -15 : 0)
+                                .padding(.trailing, obstacle.joints.contains(.right) ? -15 : 0)
+                                .padding(.top, obstacle.joints.contains(.up) ? -15 : 0)
+                                .padding(.bottom, obstacle.joints.contains(.down) ? -15 : 0)
+                                .blur(radius: 10)
+                        }
+                }
+                .compositingGroup()
+                .waterMask(padding: padding, amplitude: amplitude, factor: factor, phase: -timeOffset, rect: rect)
+                .border(Color.cyan)
             }
         }
+    }
+}
+
+extension View {
+    func waterMask(
+        padding: CGFloat,
+        amplitude: CGFloat,
+        factor: CGFloat,
+        phase: CGFloat,
+        rect: CGRect
+    ) -> some View {
+        let outerEdge = padding + amplitude
+
+        return self
+            .padding(-outerEdge)
+            .mask {
+                Path { path in
+                    path.move(to: .init(
+                        x: amplitude * sin((rect.minY - outerEdge) * factor + phase) - padding,
+                        y: -outerEdge
+                    ))
+                    // left barrier
+                    for point in Int(-outerEdge)..<Int(rect.height+outerEdge) {
+                        let absoluteYOffset = CGFloat(point) + rect.minY
+                        path.addLine(to: .init(
+                            x: amplitude * sin(absoluteYOffset * factor + phase) - padding,
+                            y: CGFloat(point))
+                        )
+                    }
+                    // right barrier
+                    for point in (Int(-outerEdge)..<Int(rect.height+outerEdge)).reversed() {
+                        let absoluteYOffset = CGFloat(point) + rect.minY
+                        path.addLine(to: .init(
+                            x: rect.width + amplitude * sin(absoluteYOffset * factor + phase) + padding,
+                            y: CGFloat(point))
+                        )
+                    }
+                    path.closeSubpath()
+                }
+                .fill(Color.black)
+            }
+            .mask {
+                Path { path in
+                    path.move(to: .init(
+                        x: -outerEdge,
+                        y: amplitude * sin((rect.minX - outerEdge) * factor + phase) - padding
+                    ))
+                    // top barrier
+                    for point in Int(-outerEdge)..<Int(rect.width+outerEdge) {
+                        let absoluteXOffset = CGFloat(point) + rect.minX
+                        path.addLine(to: .init(
+                            x: CGFloat(point),
+                            y: amplitude * sin(absoluteXOffset * factor + phase) - padding
+                        ))
+                    }
+                    // bottom barrier
+                    for point in (Int(-outerEdge)..<Int(rect.width+outerEdge)).reversed() {
+                        let absoluteXOffset = CGFloat(point) + rect.minX
+                        path.addLine(to: .init(
+                            x: CGFloat(point),
+                            y: rect.height + amplitude * sin(absoluteXOffset * factor + phase) + padding
+                        ))
+                    }
+                    path.closeSubpath()
+                }
+                .fill(Color.black)
+            }
     }
 }
 
