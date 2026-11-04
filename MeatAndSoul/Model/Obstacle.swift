@@ -33,14 +33,84 @@ struct ObstacleView: View {
             case .wall:
                 Color(white: 0.2)
             case .ichor:
-                Color.blue
-                VStack(spacing: 0) {
-                    let startIndex = Int(rect.minY / 10)
-                    let endIndex = Int(rect.maxY / 10)
-                    ForEach(startIndex..<endIndex, id: \.self) { index in
-                        Color.purple
-                            .opacity(0.8 + 0.2*sin(CGFloat(index) * 0.5 + timeOffset))
+                let padding: CGFloat = 7 // how far outside bounds the lines go, on average
+                let amplitude: CGFloat = 3 // how large the zigzagging is
+                let factor: CGFloat = 1/5 // how rough lines are
+
+                let outerEdge = padding + amplitude
+                let bigRect = CGRect(
+                    x: rect.minX - outerEdge,
+                    y: rect.minY - outerEdge,
+                    width: rect.width + 2*outerEdge,
+                    height: rect.height + 2*outerEdge
+                )
+
+                ZStack {
+                    Color.blue
+                    VStack(spacing: 0) {
+                        let startYIndex = Int(bigRect.minY / 10)
+                        let endYIndex = Int(bigRect.maxY / 10)
+                        ForEach(startYIndex..<endYIndex, id: \.self) { yIndex in
+                            Color.purple
+                                .opacity(
+                                    0.8 + 0.2*sin(CGFloat(yIndex) * 0.3 + timeOffset)
+                                )
+                        }
                     }
+                }
+                .compositingGroup()
+                .padding(-outerEdge)
+                .mask {
+                    Path { path in
+                        path.move(to: .init(
+                            x: amplitude * sin((rect.minY - outerEdge) * factor + timeOffset) - padding,
+                            y: -outerEdge
+                        ))
+                        // left barrier
+                        for point in Int(-outerEdge)..<Int(rect.height+outerEdge) {
+                            let absoluteYOffset = CGFloat(point) + rect.minY
+                            path.addLine(to: .init(
+                                x: amplitude * sin(absoluteYOffset * factor + timeOffset) - padding,
+                                y: CGFloat(point))
+                            )
+                        }
+                        // right barrier
+                        for point in (Int(-outerEdge)..<Int(rect.height+outerEdge)).reversed() {
+                            let absoluteYOffset = CGFloat(point) + rect.minY
+                            path.addLine(to: .init(
+                                x: rect.width + amplitude * sin(absoluteYOffset * factor + timeOffset) + padding,
+                                y: CGFloat(point))
+                            )
+                        }
+                        path.closeSubpath()
+                    }
+                    .fill(Color.black)
+                }
+                .mask {
+                    Path { path in
+                        path.move(to: .init(
+                            x: -outerEdge,
+                            y: amplitude * sin((rect.minX - outerEdge) * factor + timeOffset) - padding
+                        ))
+                        // top barrier
+                        for point in Int(-outerEdge)..<Int(rect.width+outerEdge) {
+                            let absoluteXOffset = CGFloat(point) + rect.minX
+                            path.addLine(to: .init(
+                                x: CGFloat(point),
+                                y: amplitude * sin(absoluteXOffset * factor + timeOffset) - padding
+                            ))
+                        }
+                        // bottom barrier
+                        for point in (Int(-outerEdge)..<Int(rect.width+outerEdge)).reversed() {
+                            let absoluteXOffset = CGFloat(point) + rect.minX
+                            path.addLine(to: .init(
+                                x: CGFloat(point),
+                                y: rect.height + amplitude * sin(absoluteXOffset * factor + timeOffset) + padding
+                            ))
+                        }
+                        path.closeSubpath()
+                    }
+                    .fill(Color.black)
                 }
             case .salt:
                 Color(white: 0.8)
@@ -52,6 +122,16 @@ struct ObstacleView: View {
 }
 
 #Preview {
+//    ZStack(alignment: .topLeading) {
+//        ObstacleView(
+//            obstacle: .init(
+//                frame: .init(x: 50, y: 50, width: 60, height: 60),
+//                variant: .ichor,
+//                orientation: .up
+//            )
+//        )
+//    }
+//    .frame(width: 200, height: 200, alignment: .topLeading)
     @Previewable @State var lastUpdate: Date?
     @Previewable @State var manager: LevelManager = .test
 
