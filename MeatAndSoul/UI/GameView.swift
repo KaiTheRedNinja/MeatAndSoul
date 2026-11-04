@@ -11,7 +11,7 @@ import Combine
 struct GameView: View {
     @State var manager: LevelManager = .test
 
-    var gameTimer = Timer.publish(every: 1/60, on: .main, in: .default).autoconnect()
+    var gameTimer = Timer.publish(every: 1/120, on: .main, in: .default).autoconnect()
     @State var lastUpdate: Date?
 
     var body: some View {

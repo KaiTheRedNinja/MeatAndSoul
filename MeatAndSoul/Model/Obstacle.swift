@@ -111,7 +111,6 @@ struct ObstacleView: View {
                 }
                 .compositingGroup()
                 .waterMask(padding: padding, amplitude: amplitude, factor: factor, phase: -timeOffset, rect: rect)
-                .border(Color.cyan)
             }
         }
     }
@@ -127,6 +126,8 @@ extension View {
     ) -> some View {
         let outerEdge = padding + amplitude
 
+        let step: CGFloat = 5 // one sample every 5
+
         return self
             .padding(-outerEdge)
             .mask {
@@ -136,7 +137,7 @@ extension View {
                         y: -outerEdge
                     ))
                     // left barrier
-                    for point in Int(-outerEdge)..<Int(rect.height+outerEdge) {
+                    for point in stride(from: -outerEdge, through: rect.height + outerEdge, by: step) {
                         let absoluteYOffset = CGFloat(point) + rect.minY
                         path.addLine(to: .init(
                             x: amplitude * sin(absoluteYOffset * factor + phase) - padding,
@@ -144,7 +145,7 @@ extension View {
                         )
                     }
                     // right barrier
-                    for point in (Int(-outerEdge)..<Int(rect.height+outerEdge)).reversed() {
+                    for point in stride(from: -outerEdge, through: rect.height + outerEdge, by: step).reversed() {
                         let absoluteYOffset = CGFloat(point) + rect.minY
                         path.addLine(to: .init(
                             x: rect.width + amplitude * sin(absoluteYOffset * factor + phase) + padding,
@@ -162,7 +163,7 @@ extension View {
                         y: amplitude * sin((rect.minX - outerEdge) * factor + phase) - padding
                     ))
                     // top barrier
-                    for point in Int(-outerEdge)..<Int(rect.width+outerEdge) {
+                    for point in stride(from: -outerEdge, through: rect.width + outerEdge, by: step) {
                         let absoluteXOffset = CGFloat(point) + rect.minX
                         path.addLine(to: .init(
                             x: CGFloat(point),
@@ -170,7 +171,7 @@ extension View {
                         ))
                     }
                     // bottom barrier
-                    for point in (Int(-outerEdge)..<Int(rect.width+outerEdge)).reversed() {
+                    for point in stride(from: -outerEdge, through: rect.width + outerEdge, by: step).reversed() {
                         let absoluteXOffset = CGFloat(point) + rect.minX
                         path.addLine(to: .init(
                             x: CGFloat(point),
