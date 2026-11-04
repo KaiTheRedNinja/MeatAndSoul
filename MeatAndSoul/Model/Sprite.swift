@@ -20,6 +20,17 @@ extension Sprite {
     }
 }
 
+enum SpriteOrientation {
+    // faces up
+    case up
+    // faces down
+    case down
+    // faces left
+    case left
+    // faces right
+    case right
+}
+
 // render the sprite into the frame
 struct SpriteRender<S: Sprite, V: View>: View {
     var sprite: S
