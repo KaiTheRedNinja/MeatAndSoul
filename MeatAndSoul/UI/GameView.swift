@@ -58,10 +58,15 @@ struct GameView: View {
                 }
             }
         }
+        .environment(\.currentOffset, lastUpdate?.timeIntervalSinceReferenceDate ?? 0)
     }
 }
 
 struct TestSprite: Sprite {
     var frame: CGRect
     var text: String
+}
+
+extension EnvironmentValues {
+    @Entry var currentOffset: TimeInterval = 0
 }

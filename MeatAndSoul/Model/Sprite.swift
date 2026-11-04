@@ -34,16 +34,16 @@ enum SpriteOrientation {
 // render the sprite into the frame
 struct SpriteRender<S: Sprite, V: View>: View {
     var sprite: S
-    var content: (CGSize, S) -> V
+    var content: (CGRect, S) -> V
 
-    init(sprite: S, @ViewBuilder content: @escaping (CGSize, S) -> V) {
+    init(sprite: S, @ViewBuilder content: @escaping (CGRect, S) -> V) {
         self.sprite = sprite
         self.content = content
     }
 
     var body: some View {
         ZStack(alignment: .topLeading) {
-            content(sprite.frame.size, sprite)
+            content(sprite.frame, sprite)
         }
         .frame(width: sprite.frame.width, height: sprite.frame.height)
         .offset(x: sprite.frame.minX, y: sprite.frame.minY)
