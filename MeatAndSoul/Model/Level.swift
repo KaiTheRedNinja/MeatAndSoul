@@ -115,7 +115,7 @@ struct Level {
                     self.moveables.append(movable)
                 }
                 if var interactable {
-                    interactable.frame = cellFrame
+                    interactable.frame = CGRect(center: cellFrame.center, size: obstacleSize)
                     self.interactables.append(interactable)
                 }
             }

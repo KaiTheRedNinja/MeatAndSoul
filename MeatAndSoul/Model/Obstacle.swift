@@ -39,7 +39,7 @@ struct ObstacleView: View {
                 Color(white: 0.3)
                     .rockyMask(
                         padding: -5,
-                        amplitude: 8,
+                        amplitude: 10,
                         factor: 1/7,
                         rect: rect
                     )
