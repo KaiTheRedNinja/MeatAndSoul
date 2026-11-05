@@ -85,7 +85,7 @@ struct ObstacleView: View {
                         }
                 }
                 .compositingGroup()
-                .waterMask(padding: padding, amplitude: amplitude, factor: factor, phase: timeOffset, rect: rect)
+                .waterMask(padding: padding, amplitude: amplitude, factor: factor, phase: timeOffset, rect: rect, joints: obstacle.joints)
             case .salt:
                 Color(white: 0.8)
             case .lava:
@@ -125,7 +125,7 @@ struct ObstacleView: View {
                         }
                 }
                 .compositingGroup()
-                .waterMask(padding: padding, amplitude: amplitude, factor: factor, phase: -timeOffset, rect: rect)
+                .waterMask(padding: padding, amplitude: amplitude, factor: factor, phase: -timeOffset, rect: rect, joints: obstacle.joints)
             }
         }
     }
@@ -203,7 +203,8 @@ extension View {
         amplitude: CGFloat,
         factor: CGFloat,
         phase: CGFloat,
-        rect: CGRect
+        rect: CGRect,
+        joints: Set<SpriteOrientation>
     ) -> some View {
         let outerEdge = padding + amplitude
 
@@ -213,25 +214,47 @@ extension View {
             .padding(-outerEdge)
             .mask {
                 Path { path in
-                    path.move(to: .init(
-                        x: amplitude * sin((rect.minY - outerEdge) * factor + phase) - padding,
-                        y: -outerEdge
-                    ))
                     // left barrier
-                    for point in stride(from: -outerEdge, through: rect.height + outerEdge, by: step) {
-                        let absoluteYOffset = CGFloat(point) + rect.minY
+                    if joints.contains(.left) {
+                        path.move(to: .init(
+                            x: -padding,
+                            y: -outerEdge
+                        ))
                         path.addLine(to: .init(
-                            x: amplitude * sin(absoluteYOffset * factor + phase) - padding,
-                            y: CGFloat(point))
-                        )
+                            x: -padding,
+                            y: rect.height + outerEdge
+                        ))
+                    } else {
+                        path.move(to: .init(
+                            x: amplitude * sin((rect.minY - outerEdge) * factor + phase) - padding,
+                            y: -outerEdge
+                        ))
+                        for point in stride(from: -outerEdge, through: rect.height + outerEdge, by: step) {
+                            let absoluteYOffset = CGFloat(point) + rect.minY
+                            path.addLine(to: .init(
+                                x: amplitude * sin(absoluteYOffset * factor + phase) - padding,
+                                y: CGFloat(point))
+                            )
+                        }
                     }
                     // right barrier
-                    for point in stride(from: -outerEdge, through: rect.height + outerEdge, by: step).reversed() {
-                        let absoluteYOffset = CGFloat(point) + rect.minY
+                    if joints.contains(.right) {
                         path.addLine(to: .init(
-                            x: rect.width + amplitude * sin(absoluteYOffset * factor + phase) + padding,
-                            y: CGFloat(point))
-                        )
+                            x: rect.width + padding,
+                            y: rect.height + outerEdge
+                        ))
+                        path.addLine(to: .init(
+                            x: rect.width + padding,
+                            y: -outerEdge
+                        ))
+                    } else {
+                        for point in stride(from: -outerEdge, through: rect.height + outerEdge, by: step).reversed() {
+                            let absoluteYOffset = CGFloat(point) + rect.minY
+                            path.addLine(to: .init(
+                                x: rect.width + amplitude * sin(absoluteYOffset * factor + phase) + padding,
+                                y: CGFloat(point))
+                            )
+                        }
                     }
                     path.closeSubpath()
                 }
@@ -239,25 +262,47 @@ extension View {
             }
             .mask {
                 Path { path in
-                    path.move(to: .init(
-                        x: -outerEdge,
-                        y: amplitude * sin((rect.minX - outerEdge) * factor + phase) - padding
-                    ))
                     // top barrier
-                    for point in stride(from: -outerEdge, through: rect.width + outerEdge, by: step) {
-                        let absoluteXOffset = CGFloat(point) + rect.minX
-                        path.addLine(to: .init(
-                            x: CGFloat(point),
-                            y: amplitude * sin(absoluteXOffset * factor + phase) - padding
+                    if joints.contains(.up) {
+                        path.move(to: .init(
+                            x: -outerEdge,
+                            y: -padding
                         ))
+                        path.addLine(to: .init(
+                            x: rect.width + outerEdge,
+                            y: -padding
+                        ))
+                    } else {
+                        path.move(to: .init(
+                            x: -outerEdge,
+                            y: amplitude * sin((rect.minX - outerEdge) * factor + phase) - padding
+                        ))
+                        for point in stride(from: -outerEdge, through: rect.width + outerEdge, by: step) {
+                            let absoluteXOffset = CGFloat(point) + rect.minX
+                            path.addLine(to: .init(
+                                x: CGFloat(point),
+                                y: amplitude * sin(absoluteXOffset * factor + phase) - padding
+                            ))
+                        }
                     }
                     // bottom barrier
-                    for point in stride(from: -outerEdge, through: rect.width + outerEdge, by: step).reversed() {
-                        let absoluteXOffset = CGFloat(point) + rect.minX
+                    if joints.contains(.down) {
                         path.addLine(to: .init(
-                            x: CGFloat(point),
-                            y: rect.height + amplitude * sin(absoluteXOffset * factor + phase) + padding
+                            x: rect.width + outerEdge,
+                            y: rect.height + padding
                         ))
+                        path.addLine(to: .init(
+                            x: -outerEdge,
+                            y: rect.height + padding
+                        ))
+                    } else {
+                        for point in stride(from: -outerEdge, through: rect.width + outerEdge, by: step).reversed() {
+                            let absoluteXOffset = CGFloat(point) + rect.minX
+                            path.addLine(to: .init(
+                                x: CGFloat(point),
+                                y: rect.height + amplitude * sin(absoluteXOffset * factor + phase) + padding
+                            ))
+                        }
                     }
                     path.closeSubpath()
                 }

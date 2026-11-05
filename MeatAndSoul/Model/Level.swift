@@ -69,11 +69,27 @@ struct Level {
                 }
 
                 if let obstacle {
+                    func isSame(_ otherRow: Int, _ otherCol: Int) -> Bool {
+                        // if the raw character is the same
+                        let other = lines[otherRow][otherCol]
+                        if other == cell { return true }
+                        // if the other is a replacement, and is the same
+                        if let otherReplacement = replacements[other], let otherObstacle = otherReplacement.obstacle {
+                            return otherObstacle == obstacle
+                        }
+                        // if this is a replacement, and is the same
+                        if obstacle == .fromSymbol(other) {
+                            return true
+                        }
+                        // else, not the same
+                        return false
+                    }
+
                     // determine if the obstacles to the top, bottom, left, and right are the same type.
-                    let upSame = if rowNo > 0 { lines[rowNo-1][colNo] == cell } else { false }
-                    let downSame = if rowNo < lines.count - 1 { lines[rowNo+1][colNo] == cell } else { false }
-                    let leftSame = if colNo > 0 { row[colNo-1] == cell } else { false }
-                    let rightSame = if colNo < row.count - 1 { row[colNo+1] == cell } else { false }
+                    let upSame = if rowNo > 0 { isSame(rowNo-1, colNo) } else { false }
+                    let downSame = if rowNo < lines.count - 1 { isSame(rowNo+1, colNo) } else { false }
+                    let leftSame = if colNo > 0 { isSame(rowNo, colNo-1) } else { false }
+                    let rightSame = if colNo < row.count - 1 { isSame(rowNo, colNo+1) } else { false }
 
                     let joints: Set<SpriteOrientation> = .init(map: [
                         .up: upSame,
@@ -163,5 +179,26 @@ extension StringProtocol {
 extension Set {
     init(map: [Element: Bool]) {
         self = Set(map.compactMap { $0.value ? $0.key : nil })
+    }
+}
+
+private extension ObstacleVariant {
+    var symbol: Character {
+        switch self {
+        case .wall: "#"
+        case .ichor: "~"
+        case .salt: "*"
+        case .lava: "+"
+        }
+    }
+
+    static func fromSymbol(_ symbol: Character) -> ObstacleVariant? {
+        switch symbol {
+        case "#": .wall
+        case "~": .ichor
+        case "*": .salt
+        case "+": .lava
+        default: nil
+        }
     }
 }
