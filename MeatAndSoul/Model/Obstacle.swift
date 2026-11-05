@@ -29,10 +29,25 @@ struct ObstacleView: View {
     @Environment(\.currentOffset) var timeOffset: TimeInterval
 
     var body: some View {
-        SpriteRender(sprite: obstacle) { rect, _ in
+        SpriteRender(sprite: obstacle) {
+            rect,
+            _ in
+
             switch obstacle.variant {
             case .wall:
-                Color(white: 0.2)
+                // im really not trying here....
+                Color(white: 0.3)
+                    .rockyMask(
+                        padding: -5,
+                        amplitude: 8,
+                        factor: 1/7,
+                        rect: rect
+                    )
+                    .background {
+                        Rectangle()
+                            .fill(Color.black)
+                            .blur(radius: 10)
+                    }
             case .ichor:
                 let padding: CGFloat = 7 // how far outside bounds the lines go, on average
                 let amplitude: CGFloat = 3 // how large the zigzagging is
@@ -117,6 +132,72 @@ struct ObstacleView: View {
 }
 
 extension View {
+    func rockyMask(
+        padding: CGFloat,
+        amplitude: CGFloat,
+        factor: CGFloat,
+        rect: CGRect
+    ) -> some View {
+        let outerEdge = padding + amplitude
+
+        let step: CGFloat = 5 // one sample every 5
+
+        return self
+            .padding(-outerEdge)
+            .mask {
+                Path { path in
+                    path.move(to: .init(
+                        x: min(0, amplitude * sin((rect.minY - outerEdge) * factor) - padding),
+                        y: -outerEdge
+                    ))
+                    // left barrier
+                    for point in stride(from: -outerEdge, through: rect.height + outerEdge, by: step) {
+                        let absoluteYOffset = CGFloat(point) + rect.minY
+                        path.addLine(to: .init(
+                            x: min(0, amplitude * sin(absoluteYOffset * factor) - padding),
+                            y: CGFloat(point))
+                        )
+                    }
+                    // right barrier
+                    for point in stride(from: -outerEdge, through: rect.height + outerEdge, by: step).reversed() {
+                        let absoluteYOffset = CGFloat(point) + rect.minY
+                        path.addLine(to: .init(
+                            x: rect.width + max(0, amplitude * sin(absoluteYOffset * factor) + padding),
+                            y: CGFloat(point))
+                        )
+                    }
+                    path.closeSubpath()
+                }
+                .fill(Color.black)
+            }
+            .mask {
+                Path { path in
+                    path.move(to: .init(
+                        x: -outerEdge,
+                        y: min(0, amplitude * sin((rect.minX - outerEdge) * factor) - padding)
+                    ))
+                    // top barrier
+                    for point in stride(from: -outerEdge, through: rect.width + outerEdge, by: step) {
+                        let absoluteXOffset = CGFloat(point) + rect.minX
+                        path.addLine(to: .init(
+                            x: CGFloat(point),
+                            y: min(0, amplitude * sin(absoluteXOffset * factor) - padding)
+                        ))
+                    }
+                    // bottom barrier
+                    for point in stride(from: -outerEdge, through: rect.width + outerEdge, by: step).reversed() {
+                        let absoluteXOffset = CGFloat(point) + rect.minX
+                        path.addLine(to: .init(
+                            x: CGFloat(point),
+                            y: rect.height + max(0, amplitude * sin(absoluteXOffset * factor) + padding)
+                        ))
+                    }
+                    path.closeSubpath()
+                }
+                .fill(Color.black)
+            }
+    }
+
     func waterMask(
         padding: CGFloat,
         amplitude: CGFloat,
