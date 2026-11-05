@@ -77,7 +77,24 @@ extension LevelManager {
             }
         }
 
-        // TODO: check for lever collisions
+        // check for lever collisions
+        for (index, interactable) in level.interactables.enumerated() where interactable.variant == .lever {
+            let isTouching = level.players.values.contains(where: { $0.intersects(other: interactable) })
+            var interactableCopy = interactable
+            interactableCopy.playerTouching = isTouching
+            // if it went from not touching to touching, flip the state
+            if interactable.playerTouching == false && interactableCopy.playerTouching {
+                interactableCopy.active = !interactableCopy.active
+            }
+            // update the button
+            level.interactables[index] = interactableCopy
+            // update anything its linked to
+            for (index, movable) in level.moveables.enumerated() where movable.linked == interactable.linked {
+                var movableCopy = movable
+                movableCopy.isOpen = movable.defaultClosed ? interactableCopy.active : !interactableCopy.active
+                level.moveables[index] = movableCopy
+            }
+        }
 
         // win condition checking
         if let human = level.players[.human], !level.tiles.contains(other: human) {

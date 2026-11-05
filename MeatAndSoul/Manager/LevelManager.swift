@@ -28,15 +28,16 @@ class LevelManager {
                 "B": .init(movable: .init(linked: "B", frame: .zero, variant: .bridge, defaultClosed: true, isOpen: false)),
                 "C": .init(movable: .init(linked: "C", frame: .zero, variant: .door, defaultClosed: true, isOpen: true)),
                 "D": .init(movable: .init(linked: "D", frame: .zero, variant: .door, defaultClosed: true, isOpen: false)),
-                "E": .init(interactable: .init(linked: "A", frame: .zero, variant: .button, active: false, orientation: .up))
+                "E": .init(interactable: .init(linked: "A", frame: .zero, variant: .button, active: false, orientation: .up)),
+                "F": .init(interactable: .init(linked: "C", frame: .zero, variant: .lever, active: false, orientation: .up))
             ],
             map: """
             ++++++++++
             +~~~~~~  +
-            +~G# AB  +
+            +~G#FA   +
             +~~~~~~   
             +######  +
-            +#Z~ECD  +
+            +#Z~EC   +
             +######  +
             ++++++++++
             """
