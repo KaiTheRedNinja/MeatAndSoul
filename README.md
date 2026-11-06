@@ -22,17 +22,18 @@ Basic functionality:
   - [x] Zombie
   - [x] Human
   - [x] Collisions
+  - [ ] Make them look good
 - [x] Tiles
   - [x] Dirt
-- [ ] Obstacles
+- [x] Obstacles
   - [x] Decide whether we want the walls/ichor/salt/lava to be considered tiles or obstacles
   - [x] Wall
   - [x] Ichor
   - [x] Salt
   - [x] Lava
   - [x] Multiple orientations for all of the walls (2^4 = 16 possible states)
-  - [ ] Movable obstacles, e.g. doors (opens walls), bridges (over ichor, lava), fans (breaks salt)
-  - [ ] Trigger items, e.g. levers and buttons
+  - [x] Movable obstacles, e.g. doors (opens walls), bridges (over ichor, lava), fans (breaks salt)
+  - [x] Trigger items, e.g. levers and buttons
 - [ ] Game loop
   - [ ] Restarting
   - [ ] Win detection (when human exits graveyard)
