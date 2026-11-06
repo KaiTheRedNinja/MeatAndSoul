@@ -44,33 +44,66 @@ struct MetalGate: View {
     private var thickness: CGFloat { min(w, h) * 0.22 }
 
     var body: some View {
-        VStack(spacing: 0) {
-            gatePanel
-                .frame(width: thickness, height: h * 0.45)
-                .rotationEffect(.degrees(-90 * openness), anchor: .topLeading)
-                .offset(y: thickness * openness)
-                .overlay(alignment: .top) {
-                    Circle() // hinge
-                        .fill(Color(red: 0.149, green: 0.086, blue: 0.059))
-                        .stroke(Color.black, lineWidth: 1)
-                        .padding(3)
-                        .brightness(0.1)
-                }
+        HStack {
+            VStack(spacing: 0) {
+                gatePanel
+                    .frame(width: thickness, height: h * 0.45)
+                    .rotationEffect(.degrees(90 * openness), anchor: .topTrailing)
+                    .offset(y: thickness * openness)
+                    .overlay(alignment: .top) {
+                        Circle() // hinge
+                            .fill(Color(red: 0.149, green: 0.086, blue: 0.059))
+                            .stroke(Color.black, lineWidth: 1)
+                            .padding(3)
+                            .brightness(0.1)
+                    }
+
+                Spacer()
+
+                gatePanel
+                    .frame(width: thickness, height: h * 0.45)
+                    .rotationEffect(.degrees(-90 * openness), anchor: .bottomTrailing)
+                    .offset(y: -thickness * openness)
+                    .overlay(alignment: .bottom) {
+                        Circle() // hinge
+                            .fill(Color(red: 0.149, green: 0.086, blue: 0.059))
+                            .stroke(Color.black, lineWidth: 1)
+                            .padding(3)
+                            .brightness(0.1)
+                    }
+            }
 
             Spacer()
 
-            gatePanel
-                .frame(width: thickness, height: h * 0.45)
-                .rotationEffect(.degrees(90 * openness), anchor: .bottomLeading)
-                .offset(y: -thickness * openness)
-                .overlay(alignment: .bottom) {
-                    Circle() // hinge
-                        .fill(Color(red: 0.149, green: 0.086, blue: 0.059))
-                        .stroke(Color.black, lineWidth: 1)
-                        .padding(3)
-                        .brightness(0.1)
-                }
+            VStack(spacing: 0) {
+                gatePanel
+                    .frame(width: thickness, height: h * 0.45)
+                    .rotationEffect(.degrees(-90 * openness), anchor: .topLeading)
+                    .offset(y: thickness * openness)
+                    .overlay(alignment: .top) {
+                        Circle() // hinge
+                            .fill(Color(red: 0.149, green: 0.086, blue: 0.059))
+                            .stroke(Color.black, lineWidth: 1)
+                            .padding(3)
+                            .brightness(0.1)
+                    }
+
+                Spacer()
+
+                gatePanel
+                    .frame(width: thickness, height: h * 0.45)
+                    .rotationEffect(.degrees(90 * openness), anchor: .bottomLeading)
+                    .offset(y: -thickness * openness)
+                    .overlay(alignment: .bottom) {
+                        Circle() // hinge
+                            .fill(Color(red: 0.149, green: 0.086, blue: 0.059))
+                            .stroke(Color.black, lineWidth: 1)
+                            .padding(3)
+                            .brightness(0.1)
+                    }
+            }
         }
+        .padding(.horizontal, w * 0.2)
         .frame(width: w, height: h, alignment: .center)
         .overlay {
             Text("🔒")
