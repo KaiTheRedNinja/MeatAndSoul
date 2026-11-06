@@ -11,27 +11,114 @@ struct MoveableView: View {
     var moveable: MoveableObstacle
 
     var body: some View {
+        let isLeftToRight: Bool = [SpriteOrientation.left, .right].contains(moveable.orientation)
+
         SpriteRender(sprite: moveable) { rect, _ in
             switch moveable.variant {
             case .door:
-                if !moveable.isOpen {
-                    // acts the same as a wall
-                    Color.orange.saturation(2)
-                    
-                    Color(white: 0.2)
-                        .padding(10)
-                } else {
-                    // its open!
-                    Color.black.opacity(0.2)
-                }
+                MetalGate(
+                    rect: rect,
+                    openness: moveable.isOpen ? 1 : 0,
+                    isLeftToRight: isLeftToRight
+                )
             case .bridge:
                 WoodenBridge(
                     rect: rect,
                     intactness: moveable.isOpen ? 1 : 0,
-                    isLeftToRight: [SpriteOrientation.left, .right].contains(moveable.orientation)
+                    isLeftToRight: isLeftToRight
                 )
             }
         }
+    }
+}
+
+@Animatable
+struct MetalGate: View {
+    @AnimatableIgnored let rect: CGRect
+    var openness: CGFloat // 0 = closed, 1 = open
+    @AnimatableIgnored let isLeftToRight: Bool
+
+    private var w: CGFloat { rect.width }
+    private var h: CGFloat { rect.height }
+
+    private var thickness: CGFloat { min(w, h) * 0.22 }
+
+    var body: some View {
+        VStack(spacing: 0) {
+            gatePanel
+                .frame(width: thickness, height: h * 0.45)
+                .rotationEffect(.degrees(-90 * openness), anchor: .topLeading)
+                .offset(y: thickness * openness)
+                .overlay(alignment: .top) {
+                    Circle() // hinge
+                        .fill(Color(red: 0.149, green: 0.086, blue: 0.059))
+                        .stroke(Color.black, lineWidth: 1)
+                        .padding(3)
+                        .brightness(0.1)
+                }
+
+            Spacer()
+
+            gatePanel
+                .frame(width: thickness, height: h * 0.45)
+                .rotationEffect(.degrees(90 * openness), anchor: .bottomLeading)
+                .offset(y: -thickness * openness)
+                .overlay(alignment: .bottom) {
+                    Circle() // hinge
+                        .fill(Color(red: 0.149, green: 0.086, blue: 0.059))
+                        .stroke(Color.black, lineWidth: 1)
+                        .padding(3)
+                        .brightness(0.1)
+                }
+        }
+        .frame(width: w, height: h, alignment: .center)
+        .overlay {
+            Text("🔒")
+                .font(.system(size: min(w, h) * 0.3))
+                .background(
+                    Circle()
+                        .fill(Color.black.opacity(0.4))
+                        .frame(width: min(w, h) * 0.5)
+                )
+                .opacity(1 - openness)
+        }
+        .animation(.bouncy(duration: 0.3, extraBounce: 0.2), value: openness)
+    }
+
+    // MARK: - Gate Panel
+
+    private var gatePanel: some View {
+        ZStack {
+            RoundedRectangle(cornerRadius: 2)
+                .fill(
+                    LinearGradient(
+                        colors: [
+                            Color(white: 0.55),
+                            Color(white: 0.28),
+                            Color(white: 0.42)
+                        ],
+                        startPoint: .topLeading,
+                        endPoint: .bottomTrailing
+                    )
+                )
+
+            // Metal bars
+            GeometryReader { geo in
+                ForEach(0..<4, id: \.self) { i in
+                    Rectangle()
+                        .fill(Color(white: 0.15))
+                        .frame(width: geo.size.width * 0.07)
+                        .position(
+                            x: geo.size.width * CGFloat(i + 1) / 5,
+                            y: geo.size.height / 2
+                        )
+                }
+            }
+
+            RoundedRectangle(cornerRadius: 2)
+                .stroke(Color.white.opacity(0.25), lineWidth: 1)
+        }
+        .shadow(color: .black.opacity(0.3), radius: 2, y: 1)
     }
 }
 

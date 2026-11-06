@@ -33,6 +33,7 @@ struct MoveableObstacle: Sprite, Identifiable {
 }
 
 enum MoveableVariant {
+    // note that doors have the walls built in
     case door // opens walls
     case bridge // clears ditches
 
