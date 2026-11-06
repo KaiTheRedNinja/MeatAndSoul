@@ -17,7 +17,7 @@ struct MoveableView: View {
                 if !moveable.isOpen {
                     // acts the same as a wall
                     Color.orange.saturation(2)
-
+                    
                     Color(white: 0.2)
                         .padding(10)
                 } else {
@@ -25,8 +25,11 @@ struct MoveableView: View {
                     Color.black.opacity(0.2)
                 }
             case .bridge:
-                // TODO: allow vertical bridges
-                WoodenBridge(rect: rect, intactness: moveable.isOpen ? 1 : 0, isLeftToRight: true)
+                WoodenBridge(
+                    rect: rect,
+                    intactness: moveable.isOpen ? 1 : 0,
+                    isLeftToRight: [SpriteOrientation.left, .right].contains(moveable.orientation)
+                )
             }
         }
     }
@@ -117,6 +120,7 @@ struct WoodenBridge: View {
                 linked: "A",
                 frame: .init(x: 0, y: 0, width: 100, height: 100),
                 variant: .bridge,
+                orientation: .left,
                 defaultClosed: true,
                 isOpen: true
             )
@@ -127,6 +131,7 @@ struct WoodenBridge: View {
                 linked: "A",
                 frame: .init(x: 0, y: 100, width: 100, height: 100),
                 variant: .bridge,
+                orientation: .left,
                 defaultClosed: true,
                 isOpen: false
             )
@@ -147,6 +152,7 @@ struct WoodenBridge: View {
                 linked: "A",
                 frame: .init(x: 100, y: 0, width: 100, height: 100),
                 variant: .door,
+                orientation: .left,
                 defaultClosed: true,
                 isOpen: true
             )
@@ -157,6 +163,7 @@ struct WoodenBridge: View {
                 linked: "A",
                 frame: .init(x: 100, y: 100, width: 100, height: 100),
                 variant: .door,
+                orientation: .left,
                 defaultClosed: true,
                 isOpen: false
             )

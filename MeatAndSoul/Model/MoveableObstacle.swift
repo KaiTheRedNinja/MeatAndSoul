@@ -16,6 +16,8 @@ struct MoveableObstacle: Sprite, Identifiable {
     var frame: CGRect
     /// What moveable this is
     var variant: MoveableVariant
+    /// What direction it is facing
+    var orientation: SpriteOrientation
 
     /// Whether this obstacle defaults to closed.
     ///
