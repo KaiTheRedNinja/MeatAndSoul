@@ -28,9 +28,74 @@ struct PlayerView: View {
         SpriteRender(sprite: player) { size, _ in
             switch player.variant {
             case .zombie:
-                Capsule()
-                    .fill(Color.green)
-                    .brightness(0.2)
+                ZStack(alignment: .topLeading) {
+                    let width = size.width
+                    let height = size.height
+
+                    let frontLeg = 0.5 // flip if going left rather than right
+                    let backLeg = 0.45
+
+                    // legs
+                    Capsule()
+                        .fill(Color.green)
+                        .brightness(-0.25) // back leg is slightly darker
+                        .frame(width: width * 0.2, height: height * 0.5)
+                        .rotationEffect(.degrees(bounce ? 15 : -15), anchor: .top)
+                        .offset(x: width * (bounce ? 0.2 : 0.6), y: height * (bounce ? frontLeg : backLeg))
+                    Capsule()
+                        .fill(Color.green)
+                        .brightness(-0.2) // front leg is slightly lighter
+                        .frame(width: width * 0.2, height: height * 0.5)
+                        .rotationEffect(.degrees(bounce ? -15 : 15), anchor: .top)
+                        .offset(x: width * (bounce ? 0.6 : 0.2), y: height * (bounce ? backLeg : frontLeg))
+
+                    // body
+                    Path { path in
+                        // curved head
+                        let topRadius = width/2
+                        let center: CGPoint = .init(x: topRadius, y: topRadius)
+                        let angle: CGFloat = 30
+                        let headBottomY = center.y + topRadius * sin(angle * .pi/180)
+
+                        path.addArc(
+                            center: center,
+                            radius: topRadius,
+                            startAngle: .degrees(180 - angle),
+                            endAngle: .degrees(angle),
+                            clockwise: false
+                        )
+
+                        // close the head shape
+                        path.addLine(to: .init(
+                            x: center.x - topRadius * cos(angle * .pi/180),
+                            y: headBottomY
+                        ))
+                        path.closeSubpath()
+                    }
+                    .fill(Color.green, style: .init(eoFill: true))
+                    .brightness(-0.2)
+
+                    // eyes
+                    HStack {
+                        Ellipse()
+                            .fill(Color.brown).brightness(-0.2)
+                            .frame(width: width * 0.2, height: width * 0.3)
+                        Spacer()
+                        Ellipse()
+                            .fill(Color.brown).brightness(-0.2)
+                            .frame(width: width * 0.2, height: width * 0.3)
+                    }
+                    .frame(width: width * 0.6, height: width * 0.3)
+                    .mask {
+                        VStack(spacing: 0) {
+                            Color.clear
+                            Color.white // only the bottom is visible
+                        }
+                    }
+                    .offset(x: width * 0.2, y: width * 0.2)
+                }
+                .compositingGroup() // apply shadow onto whole view
+                .shadow(radius: 5)
             case .ghost:
                 Path { path in
                     // curved head
@@ -76,6 +141,7 @@ struct PlayerView: View {
                 .stroke(Color.gray)
                 .fill(Color.white, style: .init(eoFill: true))
                 .opacity(0.5)
+                .shadow(radius: 5)
                 .offset(y: bounce ? size.height * 0.05 : size.height * -0.05)
             case .human:
                 Capsule()
@@ -91,9 +157,15 @@ struct PlayerView: View {
 }
 
 #Preview {
-    ZStack(alignment: .topLeading) {
-        GroundTileView(tile: .init(frame: .init(x: 0, y: 0, width: 100, height: 100), variant: .dirt))
-        PlayerView(player: .init(frame: .init(x: 20, y: 20, width: 60, height: 60), variant: .ghost))
+    VStack {
+        ZStack(alignment: .topLeading) {
+            GroundTileView(tile: .init(frame: .init(x: 0, y: 0, width: 100, height: 100), variant: .dirt))
+            PlayerView(player: .init(frame: .init(x: 20, y: 20, width: 60, height: 60), variant: .ghost))
+        }
+        ZStack(alignment: .topLeading) {
+            GroundTileView(tile: .init(frame: .init(x: 0, y: 0, width: 100, height: 100), variant: .dirt))
+            PlayerView(player: .init(frame: .init(x: 20, y: 20, width: 60, height: 60), variant: .zombie))
+        }
     }
     .padding(10)
 }
