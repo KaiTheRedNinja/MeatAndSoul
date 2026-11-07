@@ -119,6 +119,13 @@ extension LevelManager {
             // undo if not valid position
             candidate.frame.origin.y -= change.height
         }
+        let movement: SpriteOrientation? = if change == .zero { nil }
+        else if change.width > 0 { .right }
+        else if change.width < 0 { .left }
+        else if change.height > 0 { .down }
+        else if change.height < 0 { .up }
+        else { nil }
+        candidate.movementDirection = movement
         return candidate
     }
 
