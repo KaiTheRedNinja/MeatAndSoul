@@ -163,8 +163,120 @@ struct PlayerView: View {
                 .shadow(radius: 5)
                 .offset(y: bounce ? size.height * 0.05 : size.height * -0.05)
             case .human:
-                Capsule()
-                    .fill(Color.yellow)
+                ZStack(alignment: .topLeading) {
+                    let (frontLeg, backLeg) = [SpriteOrientation.right, .down]
+                        .contains(player.movementDirection) ? (0.025, -0.025) : (-0.025, 0.025)
+
+                    // legs
+                    let leg = VStack(spacing: 0) {
+                        Rectangle()
+                            .fill(Color.blue)
+                            .brightness(-0.3)
+                            .frame(height: height * 0.3)
+
+                        UnevenRoundedRectangle(
+                            cornerRadii: .init(bottomLeading: width * 0.1, bottomTrailing: width * 0.1)
+                        )
+                        .fill(Color.yellow)
+                    }
+
+                    leg
+                    .brightness(-0.05) // back leg is slightly darker
+                    .frame(width: width * 0.2, height: height * 0.5)
+                    .rotationEffect(.degrees(movement * (bounce ? 15 : -15)), anchor: .top)
+                    .offset(
+                        x: width * (0.2 + movement * (bounce ? 0 : 0.2)),
+                        y: height * (0.5 + movement * (bounce ? frontLeg : frontLeg))
+                    )
+
+                    leg
+                    .frame(width: width * 0.2, height: height * 0.5)
+                    .rotationEffect(.degrees(movement * (bounce ? -15 : 15)), anchor: .top)
+                    .offset(
+                        x: width * (0.6 + movement * (bounce ? 0 : -0.2)),
+                        y: height * (0.5 + movement * (bounce ? backLeg : frontLeg))
+                    )
+
+                    // body
+                    Path { path in
+                        // curved head
+                        let topRadius = width/2
+                        let center: CGPoint = .init(x: topRadius, y: topRadius)
+                        let angle: CGFloat = 30
+                        let headBottomY = center.y + topRadius * sin(angle * .pi/180)
+
+                        path.addArc(
+                            center: center,
+                            radius: topRadius,
+                            startAngle: .degrees(180 - angle),
+                            endAngle: .degrees(angle),
+                            clockwise: false
+                        )
+
+                        // close the head shape
+                        path.addLine(to: .init(
+                            x: center.x - topRadius * cos(angle * .pi/180),
+                            y: headBottomY
+                        ))
+                        path.closeSubpath()
+                    }
+                    .fill(Color.yellow, style: .init(eoFill: true))
+
+                    // pants
+                    Path { path in
+                        let topRadius = width/2
+                        let center: CGPoint = .init(x: topRadius, y: topRadius)
+                        let angle: CGFloat = 30
+                        let headBottomY = center.y + topRadius * sin(angle * .pi/180)
+
+                        path.addArc(
+                            center: center,
+                            radius: topRadius,
+                            startAngle: .degrees(180 - angle),
+                            endAngle: .degrees(180),
+                            clockwise: false
+                        )
+                        path.addLine(to: .init(x: width, y: topRadius))
+                        path.addArc(
+                            center: center,
+                            radius: topRadius,
+                            startAngle: .degrees(0),
+                            endAngle: .degrees(angle),
+                            clockwise: false
+                        )
+
+                        // close the head shape
+                        path.addLine(to: .init(
+                            x: center.x - topRadius * cos(angle * .pi/180),
+                            y: headBottomY
+                        ))
+                        path.closeSubpath()
+                    }
+                    .fill(Color.blue, style: .init(eoFill: true))
+                    .brightness(-0.3)
+
+                    // eyes
+                    HStack {
+                        Ellipse()
+                            .fill(Color.brown).brightness(-0.2)
+                            .frame(width: width * 0.2, height: width * 0.3)
+                        Spacer()
+                        Ellipse()
+                            .fill(Color.brown).brightness(-0.2)
+                            .frame(width: width * 0.2, height: width * 0.3)
+                    }
+                    .frame(width: width * 0.6, height: width * 0.3)
+                    .mask {
+                        VStack(spacing: 0) {
+                            Color.white // only the bottom is visible
+                            Color.clear
+                        }
+                    }
+                    .offset(eyeOffset)
+                    .offset(x: width * 0.2, y: width * 0.25)
+                }
+                .compositingGroup() // apply shadow onto whole view
+                .shadow(radius: 5)
             }
         }
         .onAppear {
@@ -195,6 +307,16 @@ struct PlayerView: View {
                         player: .init(
                             frame: .init(x: 20, y: 20, width: 60, height: 60),
                             variant: .zombie,
+                            movementDirection: orientation
+                        )
+                    )
+                }
+                ZStack(alignment: .topLeading) {
+                    GroundTileView(tile: .init(frame: .init(x: 0, y: 0, width: 100, height: 100), variant: .dirt))
+                    PlayerView(
+                        player: .init(
+                            frame: .init(x: 20, y: 20, width: 60, height: 60),
+                            variant: .human,
                             movementDirection: orientation
                         )
                     )
