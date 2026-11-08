@@ -10,6 +10,9 @@ import CoreGraphics
 
 extension LevelManager {
     func updatePlayer(dt: TimeInterval) {
+        // we only need to update if we're playing
+        guard case .playing = level.levelState else { return }
+
         // update the positions
         let soulUp = keys.keyState("W").isDown
         let soulLeft = keys.keyState("A").isDown
@@ -99,6 +102,7 @@ extension LevelManager {
         // win condition checking
         if let human = level.players[.human], !level.tiles.contains(other: human) {
             print("You win!")
+            level.levelState = .finished
         }
     }
 

@@ -16,6 +16,8 @@ struct Level {
     var decorations: [Decoration]
     var tiles: TileMap
 
+    var levelState: LevelState = .playing
+
     init(name: String, replacements: [Character: TileReplacement] = [:], map: String) {
         let tileSize: CGSize = .init(width: 100, height: 100)
         let playerSize: CGSize = .init(width: 60, height: 60)
@@ -148,6 +150,11 @@ struct Level {
         }
         self.tiles = .init(tileMap: tileMap, tileSize: tileSize)
     }
+}
+
+enum LevelState: Equatable {
+    case playing
+    case finished
 }
 
 struct TileReplacement {

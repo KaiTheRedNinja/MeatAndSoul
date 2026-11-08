@@ -31,6 +31,9 @@ struct HomeView: View {
         )
     )
 
+    var onLevelPressed: () -> Void
+    var onStart: () -> Void
+
     var body: some View {
         VStack {
             HStack {
@@ -44,7 +47,7 @@ struct HomeView: View {
             }
             .overlay(alignment: .trailing) {
                 Button {
-                    // TODO: show level view
+                    onLevelPressed()
                 } label: {
                     Text("Levels")
                         .font(.system(size: 20, design: .serif))
@@ -77,7 +80,7 @@ struct HomeView: View {
             }
 
             Button {
-
+                onStart()
             } label: {
                 Text("Start!")
                     .font(.system(size: 50, design: .serif))

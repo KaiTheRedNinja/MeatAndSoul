@@ -7,9 +7,33 @@ struct ContentView: View {
     var body: some View {
         switch page {
         case .home:
-            HomeView()
+            HomeView(onLevelPressed: {
+                print("Level pressed!")
+            }, onStart: {
+                print("Started!")
+                page = .level(0)
+            })
         case .level(let index):
-            GameView(manager: .init(level: allLevels[index]))
+            GameView(
+                manager: .init(level: allLevels[index]),
+                onLevelPressed: {
+                    print("Level pressed!")
+                }, onFinish: {
+                    print("Level finished!")
+                    if index + 1 < allLevels.count {
+                        page = .level(index + 1)
+                    } else {
+                        page = .noMoreLevels
+                    }
+                }
+            )
+        case .noMoreLevels:
+            EndView(onLevelPressed: {
+                print("Level pressed!")
+            }, onRestart: {
+                print("Started!")
+                page = .home
+            })
         }
     }
 }
@@ -17,6 +41,7 @@ struct ContentView: View {
 enum Page {
     case home
     case level(Int)
+    case noMoreLevels
 }
 
 #Preview {
