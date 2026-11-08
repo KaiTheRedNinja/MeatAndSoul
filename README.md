@@ -22,7 +22,7 @@ Basic functionality:
   - [x] Zombie
   - [x] Human
   - [x] Collisions
-  - [ ] Make them look good
+  - [x] Make them look good
 - [x] Tiles
   - [x] Dirt
 - [x] Obstacles
@@ -34,6 +34,6 @@ Basic functionality:
   - [x] Multiple orientations for all of the walls (2^4 = 16 possible states)
   - [x] Movable obstacles, e.g. doors (opens walls), bridges (over ichor, lava), fans (breaks salt)
   - [x] Trigger items, e.g. levers and buttons
-- [ ] Game loop
-  - [ ] Restarting
-  - [ ] Win detection (when human exits graveyard)
+- [x] Game loop
+  - [x] Restarting
+  - [x] Win detection (when human exits graveyard)
