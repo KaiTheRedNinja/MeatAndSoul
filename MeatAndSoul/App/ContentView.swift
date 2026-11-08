@@ -27,6 +27,7 @@ struct ContentView: View {
                     }
                 }
             )
+            .id(index)
         case .noMoreLevels:
             EndView(onLevelPressed: {
                 print("Level pressed!")
