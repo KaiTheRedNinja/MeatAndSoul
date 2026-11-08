@@ -97,7 +97,30 @@ struct GroundTileView: View {
             switch tile.variant {
             case .dirt:
                 Color.brown
+                    .brightness(-0.1)
+                    .overlay(alignment: .topLeading) {
+                        // streaks every few points
+                        let spacing: CGFloat = 30
+                        let startingOffset = size.minX.remainder(dividingBy: spacing)
+                        ForEach(0..<Int((size.width - startingOffset)/spacing + 1), id: \.self) { index in
+                            Rectangle()
+                                .fill(Color.brown)
+                                .brightness(-0.12)
+                                .frame(width: spacing/2)
+                                .offset(x: -startingOffset + CGFloat(index) * spacing)
+                        }
+                    }
             }
         }
     }
+}
+
+#Preview {
+    ZStack(alignment: .topLeading) {
+        GroundTileView(tile: .init(frame: .init(x: 0, y: 0, width: 100, height: 100), variant: .dirt))
+        GroundTileView(tile: .init(frame: .init(x: 100, y: 0, width: 100, height: 100), variant: .dirt))
+        GroundTileView(tile: .init(frame: .init(x: 0, y: 100, width: 100, height: 100), variant: .dirt))
+        GroundTileView(tile: .init(frame: .init(x: 100, y: 100, width: 100, height: 100), variant: .dirt))
+    }
+    .frame(width: 200, height: 200, alignment: .topLeading)
 }
