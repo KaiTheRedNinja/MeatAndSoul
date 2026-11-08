@@ -48,18 +48,15 @@ private let level1: Level = .init(
     """
 )
 
-let level2_bridge_1 = LinkID(id: "BRIDGE_1", color: .red)
-let level2_door_2 = LinkID(id: "DOOR_2", color: .yellow)
-let level2_bridge_3 = LinkID(id: "BRIDGE_3", color: .blue)
 private let level2: Level = .init(
     name: "Bridges",
     replacements: [
-        "a": .init(interactable: .init(linked: level2_bridge_1, frame: .zero, variant: .button, active: false, orientation: .up)),
-        "b": .init(obstacle: .lava, movable: .init(linked: level2_bridge_1, frame: .zero, variant: .bridge, orientation: .left, defaultClosed: true, isOpen: false)),
-        "c": .init(interactable: .init(linked: level2_door_2, frame: .zero, variant: .lever, active: false, orientation: .up)),
-        "d": .init(movable: .init(linked: level2_door_2, frame: .zero, variant: .door, orientation: .left, defaultClosed: true, isOpen: false)),
-        "e": .init(interactable: .init(linked: level2_bridge_3, frame: .zero, variant: .lever, active: false, orientation: .up)),
-        "f": .init(obstacle: .lava, movable: .init(linked: level2_bridge_3, frame: .zero, variant: .bridge, orientation: .left, defaultClosed: true, isOpen: false)),
+        "a": .init(interactable: .init(linked: .red, frame: .zero, variant: .button, active: false, orientation: .up)),
+        "b": .init(obstacle: .lava, movable: .init(linked: .red, frame: .zero, variant: .bridge, orientation: .left, defaultClosed: true, isOpen: false)),
+        "c": .init(interactable: .init(linked: .yellow, frame: .zero, variant: .lever, active: false, orientation: .up)),
+        "d": .init(movable: .init(linked: .yellow, frame: .zero, variant: .door, orientation: .left, defaultClosed: true, isOpen: false)),
+        "e": .init(interactable: .init(linked: .green, frame: .zero, variant: .lever, active: false, orientation: .up)),
+        "f": .init(obstacle: .lava, movable: .init(linked: .green, frame: .zero, variant: .bridge, orientation: .left, defaultClosed: true, isOpen: false)),
 
         "x": .init(decoration: .init(frame: .init(origin: .zero, size: .init(width: 140, height: 70)), variant:
                 .text(.init(text: "Buttons open doors/bridges while you stand on them", backgroundColor: Color(white: 0.25, opacity: 0.5))))),

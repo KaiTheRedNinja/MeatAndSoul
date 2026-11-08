@@ -35,4 +35,12 @@ enum InteractableVariant: Equatable {
 struct LinkID {
     var id: String
     var color: Color
+
+    static let red = LinkID(id: "RED", color: .red)
+    static let yellow = LinkID(id: "YELLOW", color: .yellow)
+    static let green = LinkID(id: "GREEN", color: .green)
+    static let blue = LinkID(id: "BLUE", color: .blue)
+    static let cyan = LinkID(id: "CYAN", color: .cyan)
+    static let pink = LinkID(id: "PINK", color: .pink)
+    static let gray = LinkID(id: "GRAY", color: .gray)
 }
