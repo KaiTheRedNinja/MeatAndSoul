@@ -2,7 +2,7 @@ import SwiftUI
 import Playgrounds
 
 struct ContentView: View {
-    @State var page: Page = .level(2)
+    @State var page: Page = .level(3)
 
     var body: some View {
         switch page {

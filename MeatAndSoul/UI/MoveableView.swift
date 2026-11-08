@@ -108,6 +108,7 @@ struct MetalGate: View {
         }
         .padding(.horizontal, w * 0.2)
         .frame(width: w, height: h, alignment: .center)
+        .rotationEffect(.degrees(isLeftToRight ? 0 : 90)) // poor man's multi direction support, note that it doesn't support non-square frames
         .overlay {
             Text("🔒")
                 .font(.system(size: min(w, h) * 0.3))
@@ -120,8 +121,6 @@ struct MetalGate: View {
         }
         .animation(.bouncy(duration: 0.3, extraBounce: 0.2), value: openness)
     }
-
-    // MARK: - Gate Panel
 
     private var gatePanel: some View {
         ZStack {

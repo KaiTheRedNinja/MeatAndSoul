@@ -78,4 +78,47 @@ private let level2: Level = .init(
     """
 )
 
-let allLevels: [Level] = [level0, level1, level2]
+private let level3: Level = .init(
+    name: "Squeeze",
+    replacements: [
+        // to enter main hallway
+        "a": .init(interactable: .init(linked: .red, frame: .zero, variant: .lever, active: false, orientation: .up)),
+        "b": .init(interactable: .init(linked: .yellow, frame: .zero, variant: .lever, active: false, orientation: .up)),
+        "c": .init(movable: .init(linked: .red, frame: .zero, variant: .door, orientation: .left, defaultClosed: true, isOpen: false)),
+        "d": .init(obstacle: .lava, movable: .init(linked: .yellow, frame: .zero, variant: .bridge, orientation: .left, defaultClosed: true, isOpen: false)),
+
+        // to allow zombie to enter middle-bottom chamber
+        "e": .init(interactable: .init(linked: .green, frame: .zero, variant: .button, active: false, orientation: .up)),
+        "f": .init(obstacle: .ichor, movable: .init(linked: .green, frame: .zero, variant: .door, orientation: .up, defaultClosed: true, isOpen: false)),
+
+        // to allow ghost to enter top-right chamber
+        "g": .init(interactable: .init(linked: .pink, frame: .zero, variant: .button, active: false, orientation: .up)),
+        "h": .init(obstacle: .lava, movable: .init(linked: .pink, frame: .zero, variant: .bridge, orientation: .left, defaultClosed: true, isOpen: false)),
+
+        // to allow zombie to enter bottom-right chamber
+        "i": .init(interactable: .init(linked: .cyan, frame: .zero, variant: .button, active: false, orientation: .up)),
+        "j": .init(obstacle: .lava, movable: .init(linked: .cyan, frame: .zero, variant: .bridge, orientation: .left, defaultClosed: true, isOpen: false)),
+
+        // to open main gate
+        "k": .init(interactable: .init(linked: .blue, frame: .zero, variant: .lever, active: false, orientation: .up)),
+        "l": .init(obstacle: .lava, movable: .init(linked: .blue, frame: .zero, variant: .bridge, orientation: .left, defaultClosed: true, isOpen: false)),
+
+        "x": .init(obstacle: .lava, decoration: .init(frame: .init(origin: .zero, size: .init(width: 260, height: 80)), variant:
+                .text(.init(text: "Human is blocked by ichor, walls, and lava - restart the level if you merged in a bad spot")))),
+    ],
+    map: """
+    ++++x++++++
+    +a+   h   +
+    +~+ e + i +
+    + +   +   +
+    +G++#++++++
+    + cd     l.
+    +Z++f++++++
+    + +   +   +
+    +#+ g + k +
+    +b+   j   +
+    +++++++++++
+    """
+)
+
+let allLevels: [Level] = [level0, level1, level2, level3]
