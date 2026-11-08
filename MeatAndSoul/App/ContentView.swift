@@ -2,9 +2,38 @@ import SwiftUI
 import Playgrounds
 
 struct ContentView: View {
-    @State var page: Page = .level(3)
+    @State var page: Page = .home
 
     var body: some View {
+        content
+            .background {
+                // ghost icons
+                GeometryReader { geom in
+                    VStack {
+                        Spacer()
+                        ForEach(0..<Int(geom.size.height / 100 + 1), id: \.self) { rowNo in
+                            HStack {
+                                Spacer()
+
+                                ForEach(0..<Int(geom.size.width / 100 + 1), id: \.self) { _ in
+                                    let choice = ["👻", "🪦", "🧟", "🎃"].randomElement()!
+                                    Text(choice)
+                                        .opacity(0.5)
+
+                                    Spacer()
+                                }
+                            }
+                            .offset(x: CGFloat(rowNo%2) * 50)
+                            Spacer()
+                        }
+                    }
+                }
+                .padding(-100)
+            }
+    }
+
+    @ViewBuilder
+    var content: some View {
         switch page {
         case .home:
             HomeView(onLevelPressed: {

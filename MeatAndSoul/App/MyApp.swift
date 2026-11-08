@@ -5,6 +5,7 @@ import SwiftUI
         WindowGroup {
             ContentView()
                 .environment(\.colorScheme, .dark)
+                .navigationTitle("Meat+Soul")
         }
     }
 }

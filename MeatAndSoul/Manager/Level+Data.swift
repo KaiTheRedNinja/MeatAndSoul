@@ -54,7 +54,7 @@ private let level2: Level = .init(
         "a": .init(interactable: .init(linked: .red, frame: .zero, variant: .button, active: false, orientation: .up)),
         "b": .init(obstacle: .lava, movable: .init(linked: .red, frame: .zero, variant: .bridge, orientation: .left, defaultClosed: true, isOpen: false)),
         "c": .init(interactable: .init(linked: .yellow, frame: .zero, variant: .lever, active: false, orientation: .up)),
-        "d": .init(movable: .init(linked: .yellow, frame: .zero, variant: .door, orientation: .left, defaultClosed: true, isOpen: false)),
+        "d": .init(obstacle: .lava, movable: .init(linked: .yellow, frame: .zero, variant: .bridge, orientation: .left, defaultClosed: true, isOpen: false)),
         "e": .init(interactable: .init(linked: .green, frame: .zero, variant: .lever, active: false, orientation: .up)),
         "f": .init(obstacle: .lava, movable: .init(linked: .green, frame: .zero, variant: .bridge, orientation: .left, defaultClosed: true, isOpen: false)),
 
