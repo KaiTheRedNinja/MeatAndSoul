@@ -13,6 +13,7 @@ struct Level {
     var obstacles: [Obstacle]
     var moveables: [MoveableObstacle]
     var interactables: [Interactable]
+    var decorations: [Decoration]
     var tiles: TileMap
 
     init(name: String, replacements: [Character: TileReplacement] = [:], map: String) {
@@ -26,6 +27,7 @@ struct Level {
         self.obstacles = []
         self.moveables = []
         self.interactables = []
+        self.decorations = []
 
         let lines = map.trimmingCharacters(in: .whitespacesAndNewlines).split(separator: "\n").map { $0.characters }
         var tileMap: [[GroundTile]] = []
@@ -45,11 +47,13 @@ struct Level {
                 var obstacle: ObstacleVariant?
                 var movable: MoveableObstacle?
                 var interactable: Interactable?
+                var decoration: Decoration?
 
                 if let replacement = replacements[cell] {
                     obstacle = replacement.obstacle
                     movable = replacement.movable
                     interactable = replacement.interactable
+                    decoration = replacement.decoration
                 }
 
                 switch cell {
@@ -134,6 +138,10 @@ struct Level {
                     interactable.frame = CGRect(center: cellFrame.center, size: obstacleSize)
                     self.interactables.append(interactable)
                 }
+                if var decoration {
+                    decoration.frame = .init(center: cellFrame.center, size: decoration.frame.size)
+                    self.decorations.append(decoration)
+                }
             }
 
             tileMap.append(rowTiles)
@@ -146,6 +154,7 @@ struct TileReplacement {
     var obstacle: ObstacleVariant?
     var movable: MoveableObstacle?
     var interactable: Interactable?
+    var decoration: Decoration?
 }
 
 extension CGRect {

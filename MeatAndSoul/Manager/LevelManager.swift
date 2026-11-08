@@ -29,11 +29,12 @@ class LevelManager {
                 "C": .init(movable: .init(linked: "C", frame: .zero, variant: .door, orientation: .left, defaultClosed: true, isOpen: false)),
 //                "D": .init(movable: .init(linked: "D", frame: .zero, variant: .door, defaultClosed: true, isOpen: false)),
                 "E": .init(interactable: .init(linked: "A", frame: .zero, variant: .button, active: false, orientation: .up)),
-                "F": .init(interactable: .init(linked: "C", frame: .zero, variant: .lever, active: false, orientation: .up))
+                "F": .init(interactable: .init(linked: "C", frame: .zero, variant: .lever, active: false, orientation: .up)),
+                "H": .init(obstacle: .ichor, decoration: .init(frame: .init(center: .zero, size: .init(width: 140, height: 70)), variant: .text(.init(text: "Ghosts cannot cross Ichor"))))
             ],
             map: """
             ++++++++++
-            +~~~~~~  +
+            +~~H~~~  +
             +~G#F A  +
             +~~~~~~   
             +######  +

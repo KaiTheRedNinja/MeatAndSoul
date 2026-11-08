@@ -48,6 +48,10 @@ struct GameView: View {
                     InteractableView(interactable: interactable)
                 }
 
+                ForEach(manager.level.decorations) { decoration in
+                    DecorationView(decor: decoration)
+                }
+
                 ForEach(PlayerVariant.allCases.enumerated(), id: \.offset) { (_, variant) in
                     if let player = manager.level.players[variant] {
                         PlayerView(player: player)

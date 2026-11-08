@@ -21,6 +21,6 @@ enum DecorationVariant {
 struct TextDecorationInfo {
     var text: String
     var fontSize: CGFloat? = nil // if nil, will auto adjust
-    var backgroundColor: Color = .clear
-    var textColor: Color = .primary
+    var backgroundColor: Color = Color.init(white: 0.25)
+    var textColor: Color = .white
 }
