@@ -102,7 +102,7 @@ extension LevelManager {
         }
 
         // win condition checking
-        if let human = level.players[.human], !level.tiles.contains(other: human) {
+        if let human = level.players[.human], !level.tiles.contains(other: human), !demoMode {
             print("You win!")
             level.levelState = .finished
         }

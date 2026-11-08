@@ -15,9 +15,13 @@ class LevelManager {
 
     var keys: KeysState = .init()
 
-    init(level: Level) {
+    /// Demo mode disables victory
+    var demoMode: Bool = false
+
+    init(level: Level, demoMode: Bool = false) {
         self.level = level
         self.levelBackup = level
+        self.demoMode = demoMode
     }
 
     func tick(dt: TimeInterval) {

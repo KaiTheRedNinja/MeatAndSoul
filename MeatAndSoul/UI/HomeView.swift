@@ -12,23 +12,24 @@ struct HomeView: View {
         level: .init(
             name: "Meat+Soul",
             replacements: [
-                "A": .init(decoration: .init(frame: .init(x: 0, y: 0, width: 100, height: 100), variant: .text(.init(text: "This is Meat")))),
-                "B": .init(decoration: .init(frame: .init(x: 0, y: 0, width: 100, height: 100), variant: .text(.init(text: "This is Soul")))),
-                "C": .init(decoration: .init(frame: .init(x: 0, y: 0, width: 100, height: 100), variant: .text(.init(text: "Have them meet, then escape the graveyard!")))),
+                "a": .init(decoration: .init(frame: .init(x: 0, y: 0, width: 100, height: 100), variant: .text(.init(text: "This is Meat")))),
+                "b": .init(decoration: .init(frame: .init(x: 0, y: 0, width: 100, height: 100), variant: .text(.init(text: "This is Soul")))),
+                "c": .init(decoration: .init(frame: .init(x: 0, y: 0, width: 100, height: 100), variant: .text(.init(text: "Have them meet, then escape the graveyard!")))),
 
-                "V": .init(decoration: .init(frame: .init(x: 0, y: 0, width: 60, height: 60), variant: .playerMimic(.zombie))),
-                "W": .init(decoration: .init(frame: .init(x: 0, y: 0, width: 50, height: 50), variant: .text(.init(text: "+", backgroundColor: .clear, textColor: .black)))),
-                "X": .init(decoration: .init(frame: .init(x: 0, y: 0, width: 60, height: 60), variant: .playerMimic(.ghost))),
-                "Y": .init(decoration: .init(frame: .init(x: 0, y: 0, width: 50, height: 50), variant: .text(.init(text: "~>", backgroundColor: .clear, textColor: .black)))),
-                "Q": .init(decoration: .init(frame: .init(x: 0, y: 0, width: 60, height: 60), variant: .playerMimic(.human))),
+//                "V": .init(decoration: .init(frame: .init(x: 0, y: 0, width: 60, height: 60), variant: .playerMimic(.zombie))),
+                "w": .init(decoration: .init(frame: .init(x: 0, y: 0, width: 50, height: 50), variant: .text(.init(text: "+", backgroundColor: .clear, textColor: .black)))),
+//                "X": .init(decoration: .init(frame: .init(x: 0, y: 0, width: 60, height: 60), variant: .playerMimic(.ghost))),
+                "y": .init(decoration: .init(frame: .init(x: 0, y: 0, width: 50, height: 50), variant: .text(.init(text: "~>", backgroundColor: .clear, textColor: .black)))),
+                "q": .init(decoration: .init(frame: .init(x: 0, y: 0, width: 60, height: 60), variant: .playerMimic(.human))),
             ],
             map: """
             .......
-            .A B C.
-            .VWXYQ.
+            .a b c.
+            .ZwGyq.
             .......
             """
-        )
+        ),
+        demoMode: true
     )
 
     var onLevelPressed: () -> Void
