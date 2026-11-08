@@ -16,6 +16,7 @@ struct Decoration: Sprite, Identifiable {
 
 enum DecorationVariant {
     case text(TextDecorationInfo)
+    case playerMimic(PlayerVariant)
 }
 
 struct TextDecorationInfo {

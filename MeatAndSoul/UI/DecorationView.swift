@@ -25,6 +25,8 @@ struct DecorationView: View {
                         RoundedRectangle(cornerRadius: 20)
                             .fill(info.backgroundColor)
                     }
+            case let .playerMimic(variant):
+                PlayerView(player: .init(frame: .init(origin: .zero, size: rect.size), variant: variant))
             }
         }
     }
