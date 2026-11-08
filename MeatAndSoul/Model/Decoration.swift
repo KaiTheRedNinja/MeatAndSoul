@@ -6,13 +6,21 @@
 //
 
 import Foundation
+import SwiftUI
 
-struct DecorationObstacle: Sprite, Identifiable {
+struct Decoration: Sprite, Identifiable {
     var id: UUID = .init()
     var frame: CGRect
     var variant: DecorationVariant
 }
 
 enum DecorationVariant {
-    case text(String)
+    case text(TextDecorationInfo)
+}
+
+struct TextDecorationInfo {
+    var text: String
+    var fontSize: CGFloat? = nil // if nil, will auto adjust
+    var backgroundColor: Color = .clear
+    var textColor: Color = .primary
 }
