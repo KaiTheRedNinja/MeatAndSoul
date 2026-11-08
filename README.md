@@ -17,10 +17,11 @@ This game is quite incomplete, I would preferably have added:
 - Make the graveyard look more graveyard-like
 - Wayyyy more levels
 
-## How to Play
-1. Download the macOS executable from the GitHub release
-2. Run the executable
-3. Follow the tutorial!
+## How to Run
+1. Download the macOS executable from the GitHub releases page
+2. Run the executable by double clicking it
+  1. If you get an "unknown developer" warning, open System Settings -> Privacy & Security -> allow the app to launch
+3. Follow the tutorial and have fun!
 
 ## Implementation Details
 Built using Swift and SwiftUI, all assets are made using primitive shapes. Because I'm too lazy to figure out how to get Lapse working and I don't have a tablet anyway :P
