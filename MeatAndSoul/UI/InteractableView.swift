@@ -16,9 +16,9 @@ struct InteractableView: View {
 
             switch interactable.variant {
             case .button:
-                ButtonView(isPressed: interactable.active ? 1 : -1, size: size)
+                ButtonView(color: interactable.linked.color, isPressed: interactable.active ? 1 : -1, size: size)
             case .lever:
-                LeverView(isOn: interactable.active ? 1 : -1, size: size)
+                LeverView(color: interactable.linked.color, isOn: interactable.active ? 1 : -1, size: size)
             }
         }
     }
@@ -26,6 +26,7 @@ struct InteractableView: View {
 
 @Animatable
 struct ButtonView: View {
+    @AnimatableIgnored var color: Color
     var isPressed: CGFloat // between -1 (off) and 1 (on)
     var size: CGFloat
 
@@ -39,21 +40,26 @@ struct ButtonView: View {
 
             // surface
             Circle()
-                .fill(
-                    LinearGradient(
-                        colors: isPressed > 0
-                        ? [
-                            Color(red: 0.65, green: 0.05, blue: 0.05),
-                            Color(red: 0.45, green: 0.02, blue: 0.02)
-                        ]
-                        : [
-                            Color(red: 1.0, green: 0.18, blue: 0.15),
-                            Color(red: 0.72, green: 0.03, blue: 0.03)
-                        ],
-                        startPoint: .topLeading,
-                        endPoint: .bottomTrailing
-                    )
-                )
+                .fill(color)
+                .overlay {
+                    Circle()
+                        .fill(
+                            LinearGradient(
+                                colors: isPressed > 0
+                                ? [
+                                    Color(red: 0.65, green: 0.05, blue: 0.05),
+                                    Color(red: 0.45, green: 0.02, blue: 0.02)
+                                ]
+                                : [
+                                    Color(red: 1.0, green: 0.18, blue: 0.15),
+                                    Color(red: 0.72, green: 0.03, blue: 0.03)
+                                ],
+                                startPoint: .topLeading,
+                                endPoint: .bottomTrailing
+                            )
+                        )
+                        .opacity(0.2)
+                }
                 .overlay {
                     Circle()
                         .stroke(Color.white, lineWidth: size * 0.025)
@@ -73,6 +79,7 @@ struct ButtonView: View {
 
 @Animatable
 struct LeverView: View {
+    @AnimatableIgnored var color: Color
     var isOn: CGFloat // between -1 (off) and 1 (on)
     var size: CGFloat
 
@@ -81,17 +88,22 @@ struct LeverView: View {
         ZStack {
             // housing and channel
             Capsule()
-                .fill(
-                    LinearGradient(
-                        colors: [
-                            Color(white: 0.32),
-                            Color(white: 0.45),
-                            Color(white: 0.28)
-                        ],
-                        startPoint: .topLeading,
-                        endPoint: .bottomTrailing
-                    )
-                )
+                .fill(color)
+                .overlay {
+                    Capsule()
+                        .fill(
+                            LinearGradient(
+                                colors: [
+                                    Color(white: 0.32),
+                                    Color(white: 0.45),
+                                    Color(white: 0.28)
+                                ],
+                                startPoint: .topLeading,
+                                endPoint: .bottomTrailing
+                            )
+                        )
+                        .opacity(0.2)
+                }
                 .padding(-30)
                 .frame(width: size * 0.22, height: size * 0.65)
             Capsule()

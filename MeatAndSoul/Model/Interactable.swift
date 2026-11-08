@@ -11,7 +11,7 @@ struct Interactable: Sprite, Identifiable {
     var id: UUID = .init()
 
     /// The item that it is linked to
-    var linked: String
+    var linked: LinkID
     /// The frame of the interactable
     var frame: CGRect
     /// What interactable this is
@@ -30,4 +30,9 @@ struct Interactable: Sprite, Identifiable {
 enum InteractableVariant: Equatable {
     case button
     case lever
+}
+
+struct LinkID {
+    var id: String
+    var color: Color
 }

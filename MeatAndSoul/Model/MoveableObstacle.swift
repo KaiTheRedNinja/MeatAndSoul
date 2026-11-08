@@ -11,7 +11,7 @@ struct MoveableObstacle: Sprite, Identifiable {
     var id: UUID = .init()
 
     /// The item that it is linked to
-    var linked: String
+    var linked: LinkID
 
     var frame: CGRect
     /// What moveable this is

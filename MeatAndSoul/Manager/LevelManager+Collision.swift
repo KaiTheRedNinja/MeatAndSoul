@@ -72,12 +72,6 @@ extension LevelManager {
             interactableCopy.active = isPressed
             // update the button
             level.interactables[index] = interactableCopy
-            // update anything its linked to
-            for (index, movable) in level.moveables.enumerated() where movable.linked == interactable.linked {
-                var movableCopy = movable
-                movableCopy.isOpen = movable.defaultClosed ? isPressed : !isPressed
-                level.moveables[index] = movableCopy
-            }
         }
 
         // check for lever collisions
@@ -91,12 +85,20 @@ extension LevelManager {
             }
             // update the button
             level.interactables[index] = interactableCopy
-            // update anything its linked to
-            for (index, movable) in level.moveables.enumerated() where movable.linked == interactable.linked {
-                var movableCopy = movable
-                movableCopy.isOpen = movable.defaultClosed ? interactableCopy.active : !interactableCopy.active
-                level.moveables[index] = movableCopy
-            }
+        }
+
+        // get all interactable values
+        var activeValues: [String: Bool] = [:]
+        for interactable in level.interactables {
+            // we OR them together
+            activeValues[interactable.linked.id] = (activeValues[interactable.linked.id] ?? false) || interactable.active
+        }
+        // update them all at once
+        for (index, movable) in level.moveables.enumerated() {
+            guard let isActive = activeValues[movable.linked.id] else { continue }
+            var movableCopy = movable
+            movableCopy.isOpen = movable.defaultClosed ? isActive : !isActive
+            level.moveables[index] = movableCopy
         }
 
         // win condition checking

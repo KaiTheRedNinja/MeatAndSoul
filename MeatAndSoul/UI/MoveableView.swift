@@ -17,12 +17,14 @@ struct MoveableView: View {
             switch moveable.variant {
             case .door:
                 MetalGate(
+                    color: moveable.linked.color,
                     rect: rect,
                     openness: moveable.isOpen ? 1 : 0,
                     isLeftToRight: isLeftToRight
                 )
             case .bridge:
                 WoodenBridge(
+                    color: moveable.linked.color,
                     rect: rect,
                     intactness: moveable.isOpen ? 1 : 0,
                     isLeftToRight: isLeftToRight
@@ -34,6 +36,7 @@ struct MoveableView: View {
 
 @Animatable
 struct MetalGate: View {
+    @AnimatableIgnored let color: Color
     @AnimatableIgnored let rect: CGRect
     var openness: CGFloat // 0 = closed, 1 = open
     @AnimatableIgnored let isLeftToRight: Bool
@@ -123,17 +126,21 @@ struct MetalGate: View {
     private var gatePanel: some View {
         ZStack {
             RoundedRectangle(cornerRadius: 2)
-                .fill(
-                    LinearGradient(
-                        colors: [
-                            Color(white: 0.55),
-                            Color(white: 0.28),
-                            Color(white: 0.42)
-                        ],
-                        startPoint: .topLeading,
-                        endPoint: .bottomTrailing
-                    )
-                )
+                .fill(color)
+                .overlay {
+                    Rectangle()
+                        .fill(
+                            LinearGradient(
+                                colors: [
+                                    Color(white: 0.55, opacity: 0.3),
+                                    Color(white: 0.28, opacity: 0.3),
+                                    Color(white: 0.42, opacity: 0.3)
+                                ],
+                                startPoint: .topLeading,
+                                endPoint: .bottomTrailing
+                            )
+                        )
+                }
 
             // Metal bars
             GeometryReader { geo in
@@ -157,6 +164,7 @@ struct MetalGate: View {
 
 @Animatable
 struct WoodenBridge: View {
+    @AnimatableIgnored let color: Color
     @AnimatableIgnored let rect: CGRect
     var intactness: CGFloat // between 0 (broken) and 1 (not broken)
     @AnimatableIgnored let isLeftToRight: Bool
@@ -209,21 +217,28 @@ struct WoodenBridge: View {
 
     private var plank: some View {
         RoundedRectangle(cornerRadius: 2)
-            .fill(
-                LinearGradient(
-                    colors: [
-                        Color(red: 0.65, green: 0.42, blue: 0.22),
-                        Color(red: 0.45, green: 0.27, blue: 0.13)
-                    ],
-                    startPoint: .top,
-                    endPoint: .bottom
-                )
-            )
-            .stroke(Color.black.opacity(0.2), lineWidth: 1)
+            .fill(color)
+            .stroke(Color.black, lineWidth: 1)
+            .overlay {
+                Rectangle()
+                    .fill(
+                        LinearGradient(
+                            colors: [
+                                Color(white: 0.55, opacity: 0.3),
+                                Color(white: 0.28, opacity: 0.3),
+                                Color(white: 0.42, opacity: 0.3)
+                            ],
+                            startPoint: .topLeading,
+                            endPoint: .bottomTrailing
+                        )
+                    )
+            }
     }
 }
 
 #Preview {
+    let testLink = LinkID(id: "test", color: .blue)
+
     ZStack(alignment: .topLeading) {
         // ichor
         ObstacleView(
@@ -237,7 +252,7 @@ struct WoodenBridge: View {
         // crossable bridge
         MoveableView(
             moveable: .init(
-                linked: "A",
+                linked: testLink,
                 frame: .init(x: 0, y: 0, width: 100, height: 100),
                 variant: .bridge,
                 orientation: .left,
@@ -248,7 +263,7 @@ struct WoodenBridge: View {
         // blocked bridge
         MoveableView(
             moveable: .init(
-                linked: "A",
+                linked: testLink,
                 frame: .init(x: 0, y: 100, width: 100, height: 100),
                 variant: .bridge,
                 orientation: .left,
@@ -269,7 +284,7 @@ struct WoodenBridge: View {
         // open gate
         MoveableView(
             moveable: .init(
-                linked: "A",
+                linked: testLink,
                 frame: .init(x: 100, y: 0, width: 100, height: 100),
                 variant: .door,
                 orientation: .left,
@@ -280,7 +295,7 @@ struct WoodenBridge: View {
         // closed gate
         MoveableView(
             moveable: .init(
-                linked: "A",
+                linked: testLink,
                 frame: .init(x: 100, y: 100, width: 100, height: 100),
                 variant: .door,
                 orientation: .left,

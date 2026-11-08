@@ -9,7 +9,7 @@ import SwiftUI
 import Combine
 
 struct GameView: View {
-    @State var manager: LevelManager = .test
+    @State var manager: LevelManager
 
     var onLevelPressed: () -> Void
     var onFinish: () -> Void
